@@ -22,6 +22,16 @@ function createApp() {
   app.use(express.json({ limit: '2mb' }));
   app.use(apiLimiter);
 
+  app.get('/', (req, res) => {
+    res.json({
+      ok: true,
+      app: env.appName,
+      message: 'FVPlace API is running.',
+      health: '/health',
+      apiBase: '/api',
+      maxUploadMb: env.maxUploadMb,
+    });
+  });
   app.get('/health', (req, res) => res.json({ ok: true, app: env.appName }));
   app.use('/api/auth', authRoutes);
   app.use('/api/dashboard', dashboardRoutes);

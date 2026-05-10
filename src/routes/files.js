@@ -10,7 +10,7 @@ const router = express.Router();
 const uploadDir = path.resolve(process.env.UPLOAD_DIR || 'uploads');
 fs.mkdirSync(uploadDir, { recursive: true });
 
-const maxUploadMb = Number(process.env.MAX_UPLOAD_MB || 25);
+const maxUploadMb = Number(process.env.MAX_UPLOAD_MB || 1024);
 
 const storage = multer.diskStorage({
   destination: uploadDir,
