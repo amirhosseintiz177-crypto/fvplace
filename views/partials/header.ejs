@@ -1,0 +1,20 @@
+<header class="site-header">
+  <a class="brand" href="/">
+    <span class="brand-mark">☁</span>
+    <span><%= appName %></span>
+  </a>
+  <nav>
+    <% if (currentUser) { %>
+      <a href="/dashboard">داشبورد</a>
+      <form action="/logout" method="post" class="inline-form">
+        <button type="submit">خروج</button>
+      </form>
+    <% } else { %>
+      <a href="/login">ورود</a>
+      <a class="button small" href="/register">ساخت حساب</a>
+    <% } %>
+  </nav>
+</header>
+<% if (flash) { %>
+  <div class="flash <%= flash.type %>"><%= flash.message %></div>
+<% } %>
