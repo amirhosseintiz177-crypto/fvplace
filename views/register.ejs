@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+  <%- include('partials/head', { title: `ثبت‌نام | ${appName}` }) %>
+  <body>
+    <div class="page-shell narrow">
+      <%- include('partials/header') %>
+      <main class="auth-card">
+        <h1>ساخت حساب ابری</h1>
+        <% if (errors.length) { %>
+          <div class="error-list"><% errors.forEach((error) => { %><p><%= error %></p><% }) %></div>
+        <% } %>
+        <form action="/register" method="post" class="stacked-form">
+          <label>نام
+            <input type="text" name="name" value="<%= form.name || '' %>" required autocomplete="name">
+          </label>
+          <label>ایمیل
+            <input type="email" name="email" value="<%= form.email || '' %>" required autocomplete="email">
+          </label>
+          <label>رمز عبور
+            <input type="password" name="password" minlength="8" required autocomplete="new-password">
+          </label>
+          <button class="button" type="submit">ساخت حساب</button>
+        </form>
+        <p class="muted">قبلاً ثبت‌نام کرده‌اید؟ <a href="/login">وارد شوید</a></p>
+      </main>
+    </div>
+  </body>
+</html>
