@@ -1,133 +1,40 @@
-# FVPlace Nova — Futuristic Cloud Storage SaaS
+# FVPlace Cloud Drive
 
-FVPlace Nova یک بازطراحی کامل از پروژه قبلی است: یک پایه Production-ready برای Cloud Storage مدرن با UI/UX شبیه SaaS های آینده‌نگر 2026 و معماری جداشده Frontend/Backend.
+یک بیس ساده برای ساخت پروژه فضای ابری روی Runflare/Node.js است. پروژه با Express ساخته شده، حساب کاربری دارد، نشست‌ها و کاربران را در MongoDB نگه می‌دارد و فایل‌ها را با Multer روی دیسک سرور ذخیره می‌کند.
 
-## Tech Stack
+## امکانات
 
-- **Frontend:** Next.js App Router + TailwindCSS + reusable component structure
-- **Backend:** Node.js + Express modular API
-- **Database:** MongoDB + Mongoose
-- **Authentication:** JWT access/refresh tokens + OAuth extension points
-- **Realtime:** Socket.io for upload progress, notifications and activity events
-- **Storage:** S3-compatible object storage via AWS SDK
-- **Security:** Helmet, CORS, rate limiting, validation with Zod, secure file access patterns
+- ثبت‌نام و ورود کاربر با رمز عبور هش‌شده
+- ذخیره نشست‌ها در MongoDB با `connect-mongo`
+- داشبورد کاربری برای آپلود، دانلود و حذف فایل
+- ذخیره متادیتای فایل‌ها در MongoDB
+- رابط فارسی راست‌به‌چپ با ظاهر ابری
+- آماده برای تنظیم متغیرهای محیطی در Runflare
 
-## What is included
-
-### Frontend
-
-- Glassmorphism + Cyberpunk dark UI
-- Neon glow, animated background, smooth hover transitions
-- Responsive SaaS shell and modern dashboard
-- Storage usage cards, activity timeline and recent files
-- Drag & Drop multi-file upload UI
-- Upload queue with progress UI and Pause/Resume controls
-- Right-click context menu actions
-- Real-time search UI and lazy-load-ready file list
-- Skeleton loading components
-- Command Palette with `Ctrl + K`
-- Toast-style notification dock
-- Public profile and professional share/download pages
-
-### Backend
-
-- Modular Express app under `apps/api/src`
-- JWT register/login/refresh endpoints
-- OAuth provider route placeholders for Google/GitHub style handshakes
-- Workspace model with Owner/Admin/Editor/Viewer roles
-- File/folder model with parent-child hierarchy
-- Upload to S3-compatible storage using memory upload + object keys
-- Rename, move, delete, preview URL and create-folder APIs
-- Share links with token hashing, optional password, expiry, download limits and QR code
-- Activity timeline for upload/delete/rename/move/share/download/invite events
-- Socket.io rooms per workspace for realtime events
-- Public profile endpoint for public files
-
-## Project Structure
-
-```text
-apps/
-  api/
-    src/
-      config/          # env and MongoDB connection
-      controllers/     # HTTP request handlers
-      middleware/      # auth, validation/security, errors
-      models/          # Mongoose schemas
-      realtime/        # Socket.io setup
-      routes/          # API route modules
-      services/        # S3, share links, activity services
-      utils/           # async wrappers and JWT helpers
-  web/
-    app/               # Next.js routes
-    components/        # reusable UI, dashboard and file manager components
-    lib/               # frontend API helpers
-scripts/               # local checks
-```
-
-## Environment
-
-Copy the sample file and fill production values:
+## اجرای محلی
 
 ```bash
 cp .env.example .env
-```
-
-Important variables:
-
-| Variable | Purpose |
-| --- | --- |
-| `MONGODB_URI` | MongoDB connection string |
-| `JWT_ACCESS_SECRET` / `JWT_REFRESH_SECRET` | JWT signing secrets |
-| `S3_ENDPOINT`, `S3_BUCKET`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY` | S3-compatible storage credentials |
-| `CORS_ORIGIN` | Frontend origin allowed by the API |
-| `PUBLIC_APP_URL` | Public web URL for share links |
-| `MAX_UPLOAD_MB` | Maximum file size |
-
-## Development
-
-```bash
 npm install
 npm run dev
 ```
 
-Run only the API:
+قبل از اجرا مطمئن شوید MongoDB در دسترس است و مقدار `MONGODB_URI` را در `.env` تنظیم کرده‌اید.
 
-```bash
-npm run dev:api
-```
+## متغیرهای محیطی
 
-Run only the web app:
+| نام | توضیح |
+| --- | --- |
+| `PORT` | پورتی که برنامه روی آن اجرا می‌شود. |
+| `MONGODB_URI` | آدرس اتصال MongoDB. |
+| `SESSION_SECRET` | کلید امن برای امضای کوکی نشست‌ها. |
+| `UPLOAD_DIR` | مسیر ذخیره فایل‌های آپلودشده. |
+| `MAX_UPLOAD_MB` | حداکثر حجم هر فایل بر حسب مگابایت. |
+| `APP_NAME` | نام نمایشی برنامه. |
 
-```bash
-npm run dev:web
-```
+## دیپلوی
 
-## API Overview
-
-- `POST /api/auth/register`
-- `POST /api/auth/login`
-- `POST /api/auth/refresh`
-- `GET /api/auth/oauth/:provider`
-- `GET /api/dashboard/summary`
-- `GET /api/workspaces`
-- `POST /api/workspaces`
-- `POST /api/workspaces/:id/invites`
-- `GET /api/workspaces/:id/activity`
-- `GET /api/files?workspaceId=...&parent=...&q=...&cursor=...`
-- `POST /api/files/folders`
-- `POST /api/files/upload`
-- `PATCH /api/files/:id/rename`
-- `PATCH /api/files/:id/move`
-- `DELETE /api/files/:id`
-- `GET /api/files/:id/preview`
-- `POST /api/files/:fileId/share`
-- `POST /api/share/:token/resolve`
-- `GET /api/profiles/:username`
-
-## Production Notes
-
-- Configure real OAuth provider callbacks before enabling OAuth login in production.
-- Use a virus scanning service or isolated worker for high-risk file types.
-- Move large uploads to multipart direct-to-S3 upload for true pause/resume at scale.
-- Put API and web behind HTTPS and set strict CORS origins.
-- Use MongoDB indexes and object-storage lifecycle policies for cost control.
+1. روی سرویس MongoDB Atlas یا دیتابیس MongoDB مقصد یک دیتابیس بسازید.
+2. متغیرهای محیطی بالا را در پنل Runflare تنظیم کنید.
+3. دستور شروع را روی `npm start` بگذارید.
+4. اگر فایل‌ها باید دائمی بمانند، برای مسیر `UPLOAD_DIR` دیسک/استوریج پایدار تنظیم کنید.
