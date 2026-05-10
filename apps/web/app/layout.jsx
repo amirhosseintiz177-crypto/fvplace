@@ -2,7 +2,7 @@ import './globals.css';
 
 export const metadata = {
   title: 'FVPlace Nova — Futuristic Cloud Storage',
-  description: 'Modern SaaS cloud storage with realtime collaboration, S3 storage, workspaces and sharing.',
+  description: 'Self-contained SaaS cloud storage with realtime collaboration, local storage, workspaces and sharing.',
 };
 
 export default function RootLayout({ children }) {

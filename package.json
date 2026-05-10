@@ -1,37 +1,53 @@
 {
-  "name": "fvplace-cloud-drive",
-  "version": "0.1.0",
-  "description": "A Runflare-ready cloud storage starter with MongoDB-backed accounts and file uploads.",
-  "main": "src/server.js",
+  "name": "fvplace-cloud-storage",
+  "version": "0.2.0",
+  "private": true,
+  "description": "A self-contained 2026 SaaS-style cloud storage platform with Next.js, Express, MongoDB, JWT, Socket.io, and local storage.",
   "scripts": {
-    "start": "node src/server.js",
-    "dev": "nodemon src/server.js",
-    "check": "node --check src/server.js && node --check src/db.js && node --check src/models/User.js && node --check src/models/File.js && node --check src/middleware/auth.js && node --check src/routes/auth.js && node --check src/routes/files.js && node --check src/routes/pages.js"
+    "dev": "concurrently \"npm:dev:api\" \"npm:dev:web\"",
+    "dev:api": "nodemon apps/api/src/server.js",
+    "dev:web": "next dev apps/web",
+    "start": "node apps/api/src/server.js",
+    "start:web": "next start apps/web",
+    "build:web": "next build apps/web",
+    "check": "node scripts/check-syntax.js"
   },
   "keywords": [
     "cloud-storage",
+    "nextjs",
     "mongodb",
     "express",
-    "runflare"
+    "socket.io",
+    "saas",
+    "self-hosted"
   ],
-  "author": "",
   "license": "MIT",
   "engines": {
     "node": ">=20"
   },
   "dependencies": {
-    "connect-mongo": "^5.1.0",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.7",
-    "ejs": "^3.1.10",
     "express": "^4.21.2",
-    "express-session": "^1.18.1",
+    "express-rate-limit": "^7.5.0",
     "helmet": "^8.0.0",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.9.5",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
-    "nanoid": "^3.3.8"
+    "next": "^15.1.4",
+    "nanoid": "^3.3.8",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "socket.io": "^4.8.1",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.9"
+    "autoprefixer": "^10.4.20",
+    "concurrently": "^9.1.2",
+    "nodemon": "^3.1.9",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17"
   }
 }

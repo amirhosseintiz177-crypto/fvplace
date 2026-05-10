@@ -55,11 +55,4 @@ const refresh = asyncHandler(async (req, res) => {
   return res.json(authResponse(user));
 });
 
-const oauthStart = (req, res) => {
-  res.json({
-    message: 'OAuth handshake placeholder. Configure provider client IDs and redirect URIs to enable production OAuth.',
-    provider: req.params.provider,
-  });
-};
-
-module.exports = { register, login, refresh, oauthStart };
+module.exports = { register, login, refresh };

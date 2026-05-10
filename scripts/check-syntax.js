@@ -2,7 +2,7 @@ const { execFileSync } = require('child_process');
 const { readdirSync, statSync } = require('fs');
 const { join } = require('path');
 
-const roots = ['apps/api/src', 'scripts'];
+const roots = ['apps/api/src', 'scripts', 'src'];
 const files = [];
 
 function walk(dir) {

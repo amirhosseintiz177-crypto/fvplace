@@ -11,6 +11,7 @@ const dashboardRoutes = require('./routes/dashboard.routes');
 const fileRoutes = require('./routes/file.routes');
 const profileRoutes = require('./routes/profile.routes');
 const shareRoutes = require('./routes/share.routes');
+const storageRoutes = require('./routes/storage.routes');
 const workspaceRoutes = require('./routes/workspace.routes');
 
 function createApp() {
@@ -27,6 +28,7 @@ function createApp() {
   app.use('/api/files', fileRoutes);
   app.use('/api/profiles', profileRoutes);
   app.use('/api/share', shareRoutes);
+  app.use('/api/storage', storageRoutes);
   app.use('/api/workspaces', workspaceRoutes);
 
   app.use(notFound);

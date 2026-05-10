@@ -1,31 +1,41 @@
-const { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } = require('@aws-sdk/client-s3');
-const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
-const env = require('../config/env');
+const fs = require('fs');
+const path = require('path');
 
-function createS3Client() {
-  return new S3Client({
-    endpoint: env.s3.endpoint,
-    region: env.s3.region,
-    forcePathStyle: env.s3.forcePathStyle,
-    credentials: env.s3.accessKeyId
-      ? { accessKeyId: env.s3.accessKeyId, secretAccessKey: env.s3.secretAccessKey }
-      : undefined,
-  });
+const localRoot = path.resolve(process.env.LOCAL_STORAGE_DIR || 'uploads');
+
+function safeLocalPath(key) {
+  const resolved = path.resolve(localRoot, key);
+  if (!resolved.startsWith(localRoot)) throw new Error('Invalid storage key.');
+  return resolved;
 }
 
-const s3 = createS3Client();
+function encodeStorageKey(key) {
+  return Buffer.from(key).toString('base64url');
+}
 
-async function putObject({ key, body, contentType }) {
-  await s3.send(new PutObjectCommand({ Bucket: env.s3.bucket, Key: key, Body: body, ContentType: contentType }));
+function decodeStorageKey(encodedKey) {
+  return Buffer.from(encodedKey, 'base64url').toString('utf8');
+}
+
+async function putObject({ key, body }) {
+  const target = safeLocalPath(key);
+  await fs.promises.mkdir(path.dirname(target), { recursive: true });
+  await fs.promises.writeFile(target, body);
   return key;
 }
 
 async function deleteObject(key) {
-  await s3.send(new DeleteObjectCommand({ Bucket: env.s3.bucket, Key: key }));
+  await fs.promises.unlink(safeLocalPath(key)).catch((error) => {
+    if (error.code !== 'ENOENT') throw error;
+  });
 }
 
 async function createPreviewUrl(key, expiresIn = 300) {
-  return getSignedUrl(s3, new GetObjectCommand({ Bucket: env.s3.bucket, Key: key }), { expiresIn });
+  return `/api/storage/${encodeStorageKey(key)}?ttl=${expiresIn}`;
 }
 
-module.exports = { putObject, deleteObject, createPreviewUrl };
+function getLocalObjectPath(encodedKey) {
+  return safeLocalPath(decodeStorageKey(encodedKey));
+}
+
+module.exports = { putObject, deleteObject, createPreviewUrl, getLocalObjectPath };
