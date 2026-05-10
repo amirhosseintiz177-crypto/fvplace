@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+  <%- include('partials/head', { title: `ورود | ${appName}` }) %>
+  <body>
+    <div class="page-shell narrow">
+      <%- include('partials/header') %>
+      <main class="auth-card">
+        <h1>ورود به فضای ابری</h1>
+        <% if (errors.length) { %>
+          <div class="error-list"><% errors.forEach((error) => { %><p><%= error %></p><% }) %></div>
+        <% } %>
+        <form action="/login" method="post" class="stacked-form">
+          <label>ایمیل
+            <input type="email" name="email" value="<%= form.email || '' %>" required autocomplete="email">
+          </label>
+          <label>رمز عبور
+            <input type="password" name="password" required autocomplete="current-password">
+          </label>
+          <button class="button" type="submit">ورود</button>
+        </form>
+        <p class="muted">حساب ندارید؟ <a href="/register">ثبت‌نام کنید</a></p>
+      </main>
+    </div>
+  </body>
+</html>
