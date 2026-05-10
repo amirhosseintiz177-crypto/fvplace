@@ -1,6 +1,6 @@
 # FVPlace Nova — Self-contained Cloud Storage SaaS
 
-FVPlace Nova یک پایه کاملاً خودمیزبان برای Cloud Storage مدرن است. این نسخه در زمان اجرا به سرویس‌های خارجی مثل Google، CDN، فونت خارجی، OAuth خارجی، S3 یا سایت‌های دیگر متکی نیست و همه چیز از API، UI، فایل‌ها و share preview تا QR placeholder داخل همین پروژه/سرور اجرا می‌شود.
+FVPlace Nova ک پایه کاملاً خودمیزبان برای Cloud Storage مدرن است. این نسخه در زمان اجرا به سرویس‌های خارجی مثل Google، CDN، فونت خارجی، OAuth خارجی، S3 یا سایت‌های دیگر متکی نیست و همه چیز از API، UI، فایل‌ها و share preview تا QR placeholder داخل همین پروژه/سرور اجرا می‌شود.
 
 ## Tech Stack
 
