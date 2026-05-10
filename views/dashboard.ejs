@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+  <%- include('partials/head', { title: `داشبورد | ${appName}` }) %>
+  <body>
+    <div class="page-shell">
+      <%- include('partials/header') %>
+      <main class="dashboard-grid">
+        <section class="panel upload-panel">
+          <p class="eyebrow">سلام <%= currentUser.name %></p>
+          <h1>فضای ابری شما</h1>
+          <p class="muted">فایل را انتخاب کنید تا روی سرور ذخیره شود و متادیتای آن در MongoDB ثبت شود.</p>
+          <form action="/upload" method="post" enctype="multipart/form-data" class="upload-box">
+            <input type="file" name="file" required>
+            <button class="button" type="submit">آپلود فایل</button>
+          </form>
+        </section>
+        <section class="stats-card">
+          <span>تعداد فایل‌ها</span>
+          <strong><%= files.length %></strong>
+          <span>حجم کل</span>
+          <strong><%= (totalBytes / 1024 / 1024).toFixed(2) %> MB</strong>
+        </section>
+        <section class="panel files-panel">
+          <div class="section-heading">
+            <h2>فایل‌های من</h2>
+            <span><%= files.length %> فایل</span>
+          </div>
+          <% if (!files.length) { %>
+            <div class="empty-state">هنوز فایلی آپلود نکرده‌اید.</div>
+          <% } else { %>
+            <div class="file-list">
+              <% files.forEach((file) => { %>
+                <article class="file-item">
+                  <div>
+                    <strong><%= file.originalName %></strong>
+                    <p><%= file.mimeType %> · <%= (file.size / 1024).toFixed(1) %> KB</p>
+                  </div>
+                  <div class="file-actions">
+                    <a class="ghost" href="/files/<%= file.id %>/download">دانلود</a>
+                    <form action="/files/<%= file.id %>/delete" method="post">
+                      <button type="submit" class="danger">حذف</button>
+                    </form>
+                  </div>
+                </article>
+              <% }) %>
+            </div>
+          <% } %>
+        </section>
+      </main>
+      <%- include('partials/footer') %>
+    </div>
+  </body>
+</html>

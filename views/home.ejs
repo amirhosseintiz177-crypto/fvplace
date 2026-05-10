@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+  <%- include('partials/head', { title: appName }) %>
+  <body>
+    <div class="page-shell">
+      <%- include('partials/header') %>
+      <main class="hero">
+        <section class="hero-copy">
+          <p class="eyebrow">فضای ابری شخصی</p>
+          <h1>فایل‌هایتان را امن آپلود کنید، مدیریت کنید و هر وقت خواستید دانلود کنید.</h1>
+          <p>این بیس شامل ثبت‌نام، ورود، نشست‌های ذخیره‌شده در MongoDB، آپلود فایل و داشبورد مدیریت فایل‌هاست.</p>
+          <div class="hero-actions">
+            <a class="button" href="/register">شروع و ساخت حساب</a>
+            <a class="ghost" href="/login">قبلاً حساب دارم</a>
+          </div>
+        </section>
+        <section class="cloud-card" aria-label="نمایش امکانات">
+          <div class="cloud-icon">☁</div>
+          <div>
+            <strong>Cloud Drive Starter</strong>
+            <p>MongoDB + Express + Multer</p>
+          </div>
+          <ul>
+            <li>اکانت کاربری</li>
+            <li>آپلود فایل</li>
+            <li>دانلود و حذف امن</li>
+          </ul>
+        </section>
+      </main>
+      <%- include('partials/footer') %>
+    </div>
+  </body>
+</html>
