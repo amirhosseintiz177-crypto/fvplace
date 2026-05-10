@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { --font-sans: Inter, Vazirmatn, ui-sans-serif, system-ui; color-scheme: dark; }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  min-height: 100vh;
+  overflow-x: hidden;
+  background: #050914;
+  color: #eef7ff;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background:
+    radial-gradient(circle at 15% 15%, rgba(85, 247, 216, .22), transparent 30rem),
+    radial-gradient(circle at 80% 5%, rgba(157, 124, 255, .24), transparent 34rem),
+    radial-gradient(circle at 50% 90%, rgba(59, 130, 246, .16), transparent 32rem),
+    #050914;
+}
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  opacity: .35;
+  background-image: linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(circle at center, black, transparent 72%);
+}
+.glass {
+  border: 1px solid rgba(255,255,255,.12);
+  background: linear-gradient(135deg, rgba(255,255,255,.12), rgba(255,255,255,.045));
+  box-shadow: 0 24px 90px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.12);
+  backdrop-filter: blur(24px);
+}
+.neon-text { text-shadow: 0 0 30px rgba(85,247,216,.35); }
+.skeleton { position: relative; overflow: hidden; background: rgba(255,255,255,.08); }
+.skeleton::after { content: ''; position: absolute; inset: 0; transform: translateX(-100%); background: linear-gradient(90deg, transparent, rgba(255,255,255,.14), transparent); animation: shimmer 1.8s infinite; }
