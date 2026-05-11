@@ -1,8 +1,8 @@
-import './globals.css';
+﻿import './globals.css';
 
 export const metadata = {
-  title: 'FVPlace Nova — Futuristic Cloud Storage',
-  description: 'Self-contained SaaS cloud storage with realtime collaboration, local storage, workspaces and sharing.',
+  title: 'FVPlace Nova | پلتفرم حرفه ای ذخیره سازی و اشتراک فایل',
+  description: 'پلتفرم خودمیزبان ذخیره سازی فایل با داشبورد تیمی، امنیت بالا، اشتراک گذاری امن و رابط کاربری مدرن.',
 };
 
 export default function RootLayout({ children }) {
