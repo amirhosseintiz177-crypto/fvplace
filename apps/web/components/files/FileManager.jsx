@@ -1,16 +1,17 @@
 ﻿'use client';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { apiFetch, apiUpload, API_BASE_URL } from '../../lib/api';
 import { getAccessToken } from '../../lib/auth';
 
 const demoFiles = [
-  { _id: 'demo-1', name: 'Brand-System.pdf', type: 'file', mimeType: 'application/pdf', size: 2400000 },
-  { _id: 'demo-2', name: 'Launch-Trailer.mp4', type: 'file', mimeType: 'video/mp4', size: 84000000 },
-  { _id: 'demo-3', name: 'Synthwave-Cover.png', type: 'file', mimeType: 'image/png', size: 6700000 },
-  { _id: 'demo-4', name: 'api-client.ts', type: 'file', mimeType: 'text/typescript', size: 18000 },
-  { _id: 'demo-5', name: 'Product Assets', type: 'folder', mimeType: 'folder', size: 0 },
-  { _id: 'demo-6', name: 'Weekly-Podcast.mp3', type: 'file', mimeType: 'audio/mpeg', size: 15200000 },
+  { _id: 'demo-1', name: 'Brand-System.pdf', type: 'file', mimeType: 'application/pdf', size: 2400000, updatedAtLabel: 'امروز' },
+  { _id: 'demo-2', name: 'Launch-Trailer.mp4', type: 'file', mimeType: 'video/mp4', size: 84000000, updatedAtLabel: '8 دقیقه پیش' },
+  { _id: 'demo-3', name: 'Synthwave-Cover.png', type: 'file', mimeType: 'image/png', size: 6700000, updatedAtLabel: 'امروز' },
+  { _id: 'demo-4', name: 'api-client.ts', type: 'file', mimeType: 'text/typescript', size: 18000, updatedAtLabel: 'دیروز' },
+  { _id: 'demo-5', name: 'Product Assets', type: 'folder', mimeType: 'folder', size: 0, updatedAtLabel: 'امروز' },
+  { _id: 'demo-6', name: 'Weekly-Podcast.mp3', type: 'file', mimeType: 'audio/mpeg', size: 15200000, updatedAtLabel: '2 روز پیش' },
+  { _id: 'demo-7', name: 'Client-Proposal.docx', type: 'file', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', size: 560000, updatedAtLabel: 'امروز' },
 ];
 
 const insights = [
@@ -26,6 +27,8 @@ const smartCollections = [
   { label: 'کد و فنی', count: 24 },
 ];
 
+const breadcrumbItems = ['Workspace اصلی', 'Brand Assets', 'Deliverables'];
+
 export function FileManager() {
   const [workspaceId, setWorkspaceId] = useState(null);
   const [files, setFiles] = useState(demoFiles);
@@ -39,6 +42,10 @@ export function FileManager() {
   const [loading, setLoading] = useState(true);
   const [nextCursor, setNextCursor] = useState(null);
   const [activeFilter, setActiveFilter] = useState('all');
+  const [selectedIds, setSelectedIds] = useState([]);
+  const [uploadModalOpen, setUploadModalOpen] = useState(false);
+  const [dragActive, setDragActive] = useState(false);
+  const inputRef = useRef(null);
   const isDemo = !getAccessToken();
 
   useEffect(() => {
@@ -89,11 +96,13 @@ export function FileManager() {
     loadFiles();
   }
 
-  function uploadDroppedFiles(fileList) {
+  function beginUpload(fileList) {
     if (!workspaceId) return setToast('برای آپلود واقعی ابتدا وارد حساب شوید.');
-    const selected = Array.from(fileList);
+    const selected = Array.from(fileList || []);
+    if (!selected.length) return;
+
     selected.forEach((file) => {
-      const id = `${file.name}-${Date.now()}`;
+      const id = `${file.name}-${Date.now()}-${Math.random().toString(16).slice(2)}`;
       setQueue((items) => [{ id, name: file.name, progress: 0, status: 'در حال آپلود' }, ...items]);
       const formData = new FormData();
       formData.append('workspaceId', workspaceId);
@@ -107,6 +116,7 @@ export function FileManager() {
         })
         .catch((error) => setQueue((items) => items.map((item) => (item.id === id ? { ...item, status: error.message } : item))));
     });
+    setUploadModalOpen(false);
   }
 
   async function renameFile(file) {
@@ -138,25 +148,31 @@ export function FileManager() {
     setShare(payload);
   }
 
+  function toggleSelected(fileId) {
+    setSelectedIds((current) => current.includes(fileId) ? current.filter((id) => id !== fileId) : [...current, fileId]);
+  }
+
   const visibleFiles = useMemo(() => {
-    const source = isDemo ? files.filter((file) => file.name.toLowerCase().includes(query.toLowerCase())) : files;
+    const normalizedQuery = query.toLowerCase();
+    const source = isDemo ? files.filter((file) => file.name.toLowerCase().includes(normalizedQuery)) : files;
     if (activeFilter === 'all') return source;
     if (activeFilter === 'folder') return source.filter((file) => file.type === 'folder');
     if (activeFilter === 'image') return source.filter((file) => file.mimeType?.startsWith('image/'));
     if (activeFilter === 'video') return source.filter((file) => file.mimeType?.startsWith('video/'));
-    return source.filter((file) => file.mimeType?.includes('pdf') || file.mimeType?.includes('text'));
+    return source.filter((file) => file.mimeType?.includes('pdf') || file.mimeType?.includes('text') || file.mimeType?.includes('document'));
   }, [activeFilter, files, isDemo, query]);
 
   const totalBytes = useMemo(() => visibleFiles.reduce((sum, file) => sum + (file.size || 0), 0), [visibleFiles]);
+  const selectedFiles = useMemo(() => visibleFiles.filter((file) => selectedIds.includes(file._id || file.id)), [selectedIds, visibleFiles]);
 
   return (
-    <div className="grid gap-5 xl:grid-cols-[1.05fr_.95fr]">
+    <div className="grid gap-5 xl:grid-cols-[1.08fr_.92fr]">
       <section className="panel rounded-[2.2rem] p-5 lg:p-6">
         <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
           <div>
             <span className="eyebrow">File Operations Surface</span>
             <h2 className="mt-4 text-3xl font-black md:text-4xl">مدیریت فایل ها حالا واقعا شبیه یک بخش مرکزی محصول است.</h2>
-            <p className="mt-4 max-w-3xl text-sm leading-8 text-slate-300">این نما فقط لیست فایل نیست. کاربر از همین جا می تواند جستجو کند، پوشه بسازد، آپلود کند، پیش نمایش ببیند و مستقیما لینک اشتراک حرفه ای تولید کند.</p>
+            <p className="mt-4 max-w-3xl text-sm leading-8 text-slate-300">این نما فقط لیست فایل نیست. کاربر از همین جا می تواند جستجو کند، پوشه بسازد، آپلود کند، چند فایل را همزمان انتخاب کند، پیش نمایش ببیند و مستقیم لینک اشتراک حرفه ای بسازد.</p>
           </div>
           <div className="grid gap-2 sm:grid-cols-3">
             {insights.map((item) => (
@@ -174,6 +190,15 @@ export function FileManager() {
           </div>
         ) : null}
 
+        <div className="mt-5 flex flex-wrap items-center gap-2 text-sm text-slate-300">
+          {breadcrumbItems.map((item, index) => (
+            <span key={item} className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-2">
+              {item}
+              {index < breadcrumbItems.length - 1 ? <span className="text-slate-500">/</span> : null}
+            </span>
+          ))}
+        </div>
+
         <div className="mt-6 grid gap-4 lg:grid-cols-[1.1fr_.9fr]">
           <div className="rounded-[1.8rem] border border-white/10 bg-white/[0.04] p-5">
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
@@ -181,9 +206,9 @@ export function FileManager() {
                 <p className="text-sm text-slate-400">جستجو و کنترل</p>
                 <p className="mt-2 text-2xl font-black">{visibleFiles.length} آیتم در نمای فعلی</p>
               </div>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 <button onClick={createFolder} className="btn-ghost text-sm">ساخت پوشه</button>
-                <button onClick={() => setToast('در نسخه بعدی، پنجره آپلود پیشرفته هم اضافه می شود.')} className="btn-secondary text-sm">آپلود سریع</button>
+                <button onClick={() => setUploadModalOpen(true)} className="btn-secondary text-sm">آپلود پیشرفته</button>
               </div>
             </div>
             <input
@@ -209,15 +234,26 @@ export function FileManager() {
                 </button>
               ))}
             </div>
+            {selectedIds.length ? (
+              <div className="mt-4 rounded-[1.3rem] border border-cyanGlow/20 bg-cyanGlow/10 p-4 text-sm text-cyan-50">
+                {selectedIds.length} فایل انتخاب شده است.
+                <button onClick={() => setSelectedIds([])} className="mr-3 underline">پاک کردن انتخاب</button>
+              </div>
+            ) : null}
           </div>
 
           <div
-            onDragOver={(event) => event.preventDefault()}
+            onDragOver={(event) => {
+              event.preventDefault();
+              setDragActive(true);
+            }}
+            onDragLeave={() => setDragActive(false)}
             onDrop={(event) => {
               event.preventDefault();
-              uploadDroppedFiles(event.dataTransfer.files);
+              setDragActive(false);
+              beginUpload(event.dataTransfer.files);
             }}
-            className="rounded-[1.8rem] border border-dashed border-cyanGlow/35 bg-cyanGlow/8 p-5 text-center transition hover:bg-cyanGlow/12"
+            className={`rounded-[1.8rem] border border-dashed p-5 text-center transition ${dragActive ? 'border-cyanGlow bg-cyanGlow/14 shadow-neon' : 'border-cyanGlow/35 bg-cyanGlow/8 hover:bg-cyanGlow/12'}`}
           >
             <p className="text-sm text-cyanGlow">Drop Zone</p>
             <h3 className="mt-3 text-2xl font-black">فایل ها را اینجا رها کنید</h3>
@@ -226,12 +262,13 @@ export function FileManager() {
               <div className="rounded-[1.3rem] bg-black/10 p-3 text-sm text-slate-300">تا 20 فایل همزمان</div>
               <div className="rounded-[1.3rem] bg-black/10 p-3 text-sm text-slate-300">پیش نمایش بعد از آپلود</div>
             </div>
+            <button onClick={() => setUploadModalOpen(true)} className="btn-primary mt-5 text-sm">انتخاب فایل از سیستم</button>
           </div>
         </div>
 
         <div className="mt-6 grid gap-4 lg:grid-cols-[1.1fr_.9fr]">
           <div className="rounded-[1.8rem] border border-white/10 bg-white/[0.04] p-5">
-            <div className="mb-4 flex items-center justify-between">
+            <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <div>
                 <h3 className="text-2xl font-black">فهرست فایل ها</h3>
                 <p className="mt-1 text-sm text-slate-400">حجم نمای فعلی: {formatBytes(totalBytes)}</p>
@@ -239,28 +276,35 @@ export function FileManager() {
               <span className="rounded-full bg-cyanGlow/10 px-3 py-1 text-sm text-cyanGlow">{loading ? 'در حال بارگذاری' : 'آماده'}</span>
             </div>
             <div className="grid gap-3">
-              {loading ? <div className="skeleton h-24 rounded-[1.6rem]" /> : visibleFiles.map((file) => (
-                <article
-                  key={file._id || file.id}
-                  onContextMenu={(event) => {
-                    event.preventDefault();
-                    setMenu({ x: event.clientX, y: event.clientY, file });
-                  }}
-                  className="group flex flex-col gap-3 rounded-[1.6rem] border border-white/10 bg-black/10 p-4 transition hover:-translate-y-1 hover:border-cyanGlow/30 hover:shadow-neon md:flex-row md:items-center md:justify-between"
-                >
-                  <div className="flex items-center gap-4">
-                    <span className="grid h-14 w-14 place-items-center rounded-[1.2rem] bg-white/10 text-lg font-black">{iconFor(file)}</span>
-                    <div>
-                      <h4 className="font-black">{file.name}</h4>
-                      <p className="mt-1 text-sm text-slate-400">{friendlyType(file)} • {formatBytes(file.size)}</p>
+              {loading ? <div className="skeleton h-24 rounded-[1.6rem]" /> : visibleFiles.map((file) => {
+                const fileId = file._id || file.id;
+                const selected = selectedIds.includes(fileId);
+                return (
+                  <article
+                    key={fileId}
+                    onContextMenu={(event) => {
+                      event.preventDefault();
+                      setMenu({ x: event.clientX, y: event.clientY, file });
+                    }}
+                    className={`group flex flex-col gap-3 rounded-[1.6rem] border p-4 transition hover:-translate-y-1 hover:border-cyanGlow/30 hover:shadow-neon md:flex-row md:items-center md:justify-between ${selected ? 'border-cyanGlow/40 bg-cyanGlow/10' : 'border-white/10 bg-black/10'}`}
+                  >
+                    <div className="flex items-center gap-4">
+                      <button onClick={() => toggleSelected(fileId)} className={`grid h-6 w-6 place-items-center rounded-md border text-xs ${selected ? 'border-cyanGlow bg-cyanGlow text-nebula' : 'border-white/20 bg-white/5 text-white'}`}>
+                        {selected ? '✓' : ''}
+                      </button>
+                      <span className="grid h-14 w-14 place-items-center rounded-[1.2rem] bg-white/10 text-lg font-black">{iconFor(file)}</span>
+                      <div>
+                        <h4 className="font-black">{file.name}</h4>
+                        <p className="mt-1 text-sm text-slate-400">{friendlyType(file)} • {formatBytes(file.size)} • {file.updatedAtLabel || 'به روز شده'}</p>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex flex-wrap gap-2 opacity-100 transition md:opacity-0 md:group-hover:opacity-100">
-                    <button onClick={() => openPreview(file)} className="rounded-full bg-white/10 px-4 py-2 text-sm">پیش نمایش</button>
-                    <button onClick={() => createShare(file)} className="rounded-full bg-cyanGlow/15 px-4 py-2 text-sm text-cyanGlow">اشتراک</button>
-                  </div>
-                </article>
-              ))}
+                    <div className="flex flex-wrap gap-2 opacity-100 transition md:opacity-0 md:group-hover:opacity-100">
+                      <button onClick={() => openPreview(file)} className="rounded-full bg-white/10 px-4 py-2 text-sm">پیش نمایش</button>
+                      <button onClick={() => createShare(file)} className="rounded-full bg-cyanGlow/15 px-4 py-2 text-sm text-cyanGlow">اشتراک</button>
+                    </div>
+                  </article>
+                );
+              })}
             </div>
             {nextCursor ? <button onClick={() => loadFiles({ cursor: nextCursor, append: true })} className="btn-ghost mt-5 w-full">نمایش موارد بیشتر</button> : null}
           </div>
@@ -290,20 +334,35 @@ export function FileManager() {
 
       <aside className="grid gap-5">
         <section className="panel rounded-[2.2rem] p-5">
+          <h3 className="text-2xl font-black">پنل انتخاب های فعلی</h3>
+          <div className="mt-4 rounded-[1.4rem] border border-white/10 bg-white/[0.04] p-4 text-sm text-slate-300">
+            {selectedFiles.length ? (
+              <div className="space-y-2">
+                {selectedFiles.map((file) => <p key={file._id || file.id}>• {file.name}</p>)}
+              </div>
+            ) : 'هنوز فایلی انتخاب نشده است.'}
+          </div>
+          <div className="mt-4 grid gap-2">
+            <button onClick={() => selectedFiles[0] && createShare(selectedFiles[0])} className="btn-primary text-sm" disabled={!selectedFiles.length}>اشتراک فایل انتخاب شده</button>
+            <button onClick={() => selectedFiles[0] && openPreview(selectedFiles[0])} className="btn-ghost text-sm" disabled={!selectedFiles.length}>پیش نمایش فایل انتخاب شده</button>
+          </div>
+        </section>
+        <section className="panel rounded-[2.2rem] p-5">
           <h3 className="text-2xl font-black">قابلیت های خفن این بخش</h3>
           <ul className="mt-4 space-y-3 text-sm leading-8 text-slate-300">
             <li>• فیلتر نوع فایل برای حرکت سریع بین رسانه ها</li>
             <li>• صف آپلود قابل مشاهده با درصد پیشرفت</li>
             <li>• پیش نمایش فوری فایل های تصویری، ویدیویی، صوتی و PDF</li>
-            <li>• ساخت لینک اشتراک مستقیم از کنار هر فایل</li>
+            <li>• انتخاب چندفایلی برای عملیات سریع تر</li>
+            <li>• Breadcrumb و پنجره آپلود مستقل برای حس محصول کامل تر</li>
           </ul>
         </section>
         <section className="panel rounded-[2.2rem] p-5">
           <h3 className="text-2xl font-black">مسیرهای بعدی</h3>
           <div className="mt-4 grid gap-3">
             <Link href="/workspaces" className="rounded-[1.3rem] border border-white/10 bg-white/[0.04] p-4 text-sm transition hover:shadow-neon">ورود به مدیریت Workspace ها</Link>
-            <Link href="/activity" className="rounded-[1.3rem] border border-white/10 bg-white/[0.04] p-4 text-sm transition hover:shadow-neon">مرور Activity Feed</Link>
-            <Link href="/tour" className="rounded-[1.3rem] border border-white/10 bg-white/[0.04] p-4 text-sm transition hover:shadow-neon">مشاهده Tour محصول</Link>
+            <Link href="/team" className="rounded-[1.3rem] border border-white/10 bg-white/[0.04] p-4 text-sm transition hover:shadow-neon">مرور اعضای تیم</Link>
+            <Link href="/settings" className="rounded-[1.3rem] border border-white/10 bg-white/[0.04] p-4 text-sm transition hover:shadow-neon">باز کردن تنظیمات</Link>
           </div>
         </section>
       </aside>
@@ -311,6 +370,8 @@ export function FileManager() {
       {toast ? <button className="panel fixed bottom-4 left-4 z-50 rounded-[1.4rem] px-4 py-3 text-sm" onClick={() => setToast('')}>{toast}</button> : null}
       {share ? <ShareModal share={share} onClose={() => setShare(null)} /> : null}
       {menu ? <ContextMenu menu={menu} onClose={() => setMenu(null)} onPreview={openPreview} onRename={renameFile} onDelete={deleteFile} onShare={createShare} /> : null}
+      {uploadModalOpen ? <UploadModal onClose={() => setUploadModalOpen(false)} onOpenPicker={() => inputRef.current?.click()} /> : null}
+      <input ref={inputRef} type="file" multiple hidden onChange={(event) => beginUpload(event.target.files)} />
     </div>
   );
 }
@@ -331,6 +392,7 @@ function friendlyType(file) {
   if (file.mimeType?.startsWith('image/')) return 'تصویر';
   if (file.mimeType?.startsWith('audio/')) return 'صوت';
   if (file.mimeType?.includes('text')) return 'فایل متنی';
+  if (file.mimeType?.includes('document')) return 'سند';
   return file.mimeType || 'فایل';
 }
 
@@ -413,6 +475,26 @@ function ShareModal({ share, onClose }) {
         <input readOnly value={share.url} className="mt-4 w-full rounded-[1.3rem] border border-white/10 bg-white/[0.04] px-4 py-3" />
         <img src={share.qrCodeDataUrl} alt="QR Code" className="mx-auto mt-5 h-40 w-40 rounded-[1.5rem] bg-white p-2" />
         <button onClick={onClose} className="btn-primary mt-5 w-full">بستن</button>
+      </section>
+    </div>
+  );
+}
+
+function UploadModal({ onClose, onOpenPicker }) {
+  return (
+    <div className="fixed inset-0 z-50 grid place-items-center bg-black/65 p-4 backdrop-blur" onClick={onClose}>
+      <section className="panel w-full max-w-xl rounded-[2rem] p-6" onClick={(event) => event.stopPropagation()}>
+        <h2 className="text-2xl font-black">آپلود پیشرفته</h2>
+        <p className="mt-3 text-sm leading-8 text-slate-300">برای این مرحله یک پنجره مستقل گذاشتم تا تجربه آپلود فقط به یک drop zone محدود نباشد. اینجا بعدا می شود تنظیمات پوشه مقصد، برچسب و توضیح هم اضافه کرد.</p>
+        <div className="mt-5 grid gap-3 sm:grid-cols-3">
+          <div className="rounded-[1.3rem] border border-white/10 bg-white/[0.04] p-4 text-sm text-slate-300">تا 1024MB برای هر فایل</div>
+          <div className="rounded-[1.3rem] border border-white/10 bg-white/[0.04] p-4 text-sm text-slate-300">آپلود چندفایلی</div>
+          <div className="rounded-[1.3rem] border border-white/10 bg-white/[0.04] p-4 text-sm text-slate-300">صف و پیشرفت زنده</div>
+        </div>
+        <div className="mt-6 flex flex-wrap gap-3">
+          <button onClick={onOpenPicker} className="btn-primary">انتخاب فایل ها</button>
+          <button onClick={onClose} className="btn-ghost">انصراف</button>
+        </div>
       </section>
     </div>
   );
