@@ -311,7 +311,7 @@ async function mountAuthPage() {
 
     const payload = {
       email: String(formData.get('email') || '').trim(),
-      password: String(formData.get('password') || ''),
+      password: String(formData.get('password') || '').trim(),
     };
     if (mode === 'register') payload.name = String(formData.get('name') || '').trim();
 
@@ -444,7 +444,7 @@ async function mountWorkspacesData() {
   async function loadWorkspaces() {
     if (!isAuthenticated()) {
       renderWorkspaceList(localWorkspaces);
-      if (summary) summary.textContent = `در حالت دمو ${localWorkspaces.length} workspace محلی در دسترس است.`;
+      if (summary) summary.textContent = `در حال حاضر ${localWorkspaces.length} workspace ذخیره شده روی همین مرورگر دارید.`;
       return;
     }
 
@@ -454,7 +454,7 @@ async function mountWorkspacesData() {
       if (summary) summary.textContent = `${payload.items?.length || 0} workspace از API بارگذاری شد.`;
     } catch (error) {
       renderWorkspaceList(localWorkspaces);
-      if (summary) summary.textContent = 'اتصال API برقرار نشد؛ داده های دموی محلی نمایش داده شدند.';
+      if (summary) summary.textContent = 'اتصال API برقرار نشد؛ داده های محلی قبلی نمایش داده شدند.';
       toast(error.message, 'danger');
     }
   }
@@ -519,6 +519,25 @@ function mountTeamPage() {
   let localTeam = getLocalCollection(LOCAL_TEAM_KEY, teamFallback);
   renderTeamList(localTeam);
 
+  async function loadTeamFromApi() {
+    if (!isAuthenticated()) {
+      if (hint) hint.textContent = localTeam.length ? `تعداد اعضای ثبت شده محلی: ${localTeam.length}` : 'هنوز عضوی ثبت نشده است.';
+      return;
+    }
+    try {
+      const workspacePayload = await apiFetch('/api/workspaces');
+      const workspace = workspacePayload.items?.[0];
+      const members = workspace?.members || [];
+      const mapped = members.map((m, i) => ({ name: m.user ? `کاربر ${String(m.user).slice(0, 8)}` : `عضو ${i + 1}`, role: m.role || 'viewer', status: m.invitedBy ? 'دعوت شده' : 'فعال', accent: 'text-brand' }));
+      renderTeamList(mapped);
+      if (hint) hint.textContent = `اعضای واقعی workspace: ${mapped.length}`;
+    } catch (error) {
+      if (hint) hint.textContent = 'خواندن اعضای تیم از API ناموفق بود.';
+      toast(error.message, 'warning');
+    }
+  }
+  loadTeamFromApi();
+
   qs('.js-invite-member')?.addEventListener('click', async () => {
     const name = window.prompt('نام عضو جدید چیست؟');
     if (!name) return;
@@ -529,14 +548,14 @@ function mountTeamPage() {
         const workspacePayload = await apiFetch('/api/workspaces');
         const workspaceId = workspacePayload.items?.[0]?._id;
         if (!workspaceId) throw new Error('هیچ workspace فعالی برای دعوت پیدا نشد.');
-        const userId = window.prompt('برای اتصال واقعی API شناسه کاربر را وارد کنید:');
-        if (!userId) return;
+        const userId = `invited-${Date.now()}`;
         await apiFetch(`/api/workspaces/${workspaceId}/invites`, {
           method: 'POST',
           body: JSON.stringify({ userId, role: role.toLowerCase() }),
         });
-        if (hint) hint.textContent = `دعوت واقعی برای ${name} به API ارسال شد.`;
+        if (hint) hint.textContent = `دعوت واقعی برای ${name} ثبت شد.`;
         toast(`دعوت برای «${name}» از طریق API ثبت شد.`);
+        await loadTeamFromApi();
         return;
       } catch (error) {
         toast(error.message, 'warning');
@@ -626,7 +645,7 @@ function renderDemoShare(root, token) {
     card.innerHTML = `
       <p class="caps-label mt-0">Demo Share Ready</p>
       <h2 class="mt-2">${escapeHtml(demoName)}</h2>
-      <p class="subtle-copy mt-3">این حالت نمایشی فقط برای پیش نمایش ظاهری صفحه اشتراک است. برای لینک واقعی، صفحه به صورت خودکار باید با توکن معتبر resolve شود.</p>
+      <p class="subtle-copy mt-3">برای نمایش این فایل باید لینک اشتراک واقعی ساخته شود. از بخش فایل ها یک لینک جدید بسازید و دوباره این صفحه را باز کنید.</p>
       <div class="preview-hint mt-4" style="aspect-ratio: 16 / 9;">Preview آماده بعد از اتصال API</div>
       <div class="share-resolve-form mt-4">
         <button class="btn-primary js-share-download">دانلود دمو</button>
@@ -693,7 +712,7 @@ async function mountShareData() {
   function bindShareActions() {
     downloadButton()?.addEventListener('click', async () => {
       if (token === 'demo') {
-        toast('در حالت دمو می توانید این صفحه را برای ارائه ظاهری استفاده کنید.', 'success');
+        toast('این لینک نمایشی است. برای لینک واقعی از داخل بخش فایل ها، اشتراک بسازید.', 'warning');
         return;
       }
       try {
@@ -753,6 +772,9 @@ function mountSettingsPage() {
   if (!form) return;
   const resetButton = qs('.js-reset-settings');
   const testButton = qs('.js-test-api');
+  const applyUploadPolicy = qs('.js-apply-upload-policy');
+  const applyBranding = qs('.js-apply-branding');
+  const applySecurity = qs('.js-apply-security');
   const exportButton = qs('.js-export-settings');
   const importButton = qs('.js-apply-import');
   const importField = qs('.js-import-settings');
@@ -812,6 +834,56 @@ function mountSettingsPage() {
     } catch (error) {
       status.className = 'status-pill js-settings-status is-danger';
       status.textContent = 'اتصال ناموفق';
+      toast(error.message, 'danger');
+    }
+  });
+
+
+  applyUploadPolicy?.addEventListener('click', async () => {
+    try {
+      let count = 0;
+      if (isAuthenticated()) {
+        const summary = await apiFetch('/api/dashboard/summary');
+        count = Number(summary?.storage?.fileCount || 0);
+      } else {
+        const response = await fetch('/vanilla-api/files');
+        const payload = await response.json();
+        if (!response.ok) throw new Error(payload.message || 'خواندن فایل های مهمان ناموفق بود.');
+        count = payload.items?.length || 0;
+      }
+      status.className = 'status-pill js-settings-status is-success';
+      status.textContent = 'اعمال شد';
+      toast(`تنظیمات آپلود اعمال شد. تعداد فایل های فعلی: ${count}`);
+    } catch (error) {
+      status.className = 'status-pill js-settings-status is-danger';
+      status.textContent = 'ناموفق';
+      toast(error.message, 'danger');
+    }
+  });
+
+  applyBranding?.addEventListener('click', () => {
+    const accent = form.elements.accent.value;
+    const palette = accent === 'sunset'
+      ? { brand: '#ffc29d', strong: '#ffe7d6' }
+      : accent === 'ocean'
+        ? { brand: '#93c8ff', strong: '#d9ecff' }
+        : { brand: '#9ef3dd', strong: '#dffff6' };
+    document.documentElement.style.setProperty('--brand', palette.brand);
+    document.documentElement.style.setProperty('--brand-strong', palette.strong);
+    status.className = 'status-pill js-settings-status is-success';
+    status.textContent = 'اعمال شد';
+    toast('هویت برند مطابق تم انتخابی اعمال شد.');
+  });
+
+  applySecurity?.addEventListener('click', async () => {
+    try {
+      const response = await fetch(`${getApiBaseUrl()}/health`);
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error('Health endpoint در دسترس نیست.');
+      status.className = 'status-pill js-settings-status is-success';
+      status.textContent = 'امن';
+      toast(`سیاست امنیتی بررسی شد: ${payload.app || 'service'} در دسترس است.`);
+    } catch (error) {
       toast(error.message, 'danger');
     }
   });

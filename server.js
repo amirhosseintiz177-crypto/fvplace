@@ -280,7 +280,7 @@ async function handleAuth(req, res, url) {
         id: randomUUID(),
         name: String(body.name || 'کاربر جدید').trim() || 'کاربر جدید',
         email: String(body.email || '').trim().toLowerCase(),
-        passwordHash: sha(body.password || ''),
+        passwordHash: sha(String(body.password || '').trim()),
         publicProfile: {
           username: String((body.name || 'guest').trim().toLowerCase().replace(/[^a-z0-9]+/g, '-') || 'guest'),
           isPublic: true,
@@ -299,7 +299,9 @@ async function handleAuth(req, res, url) {
     try {
       const body = await readJsonBody(req);
       const user = readUsers().find((entry) => entry.email === String(body.email || '').trim().toLowerCase());
-      if (!user || user.passwordHash !== sha(body.password || '')) {
+      const incomingPassword = String(body.password || '');
+      const validPassword = user && (user.passwordHash === sha(incomingPassword) || user.passwordHash === sha(incomingPassword.trim()));
+      if (!user || !validPassword) {
         return sendJson(res, 401, { message: 'ایمیل یا رمز عبور درست نیست.' });
       }
       return sendJson(res, 200, issueSession(user));
