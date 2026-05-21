@@ -58,8 +58,8 @@ export const dashboardFallback = {
   stats: [
     { label: 'فایل فعال', value: '1,284' },
     { label: 'لینک اشتراک', value: '96' },
-    { label: 'همکار تیمی', value: '18' },
-    { label: 'آپلود امروز', value: '42' },
+    { label: 'اعضای واقعی', value: '0' },
+    { label: 'آپلود امروز', value: '0' },
   ],
   activities: [
     'ویدیوی کمپین به فضای تیم آپلود شد',
@@ -76,25 +76,13 @@ export const workspacesFallback = [
   { name: 'Studio Vault', role: 'Editor', members: 5, storage: '2.1 GB' },
 ];
 
-export const teamFallback = [
-  { name: 'Sara Rahimi', role: 'Product Editor', status: 'Online', accent: 'text-brand' },
-  { name: 'Amir Soltani', role: 'Workspace Admin', status: 'Reviewing assets', accent: 'text-warning' },
-  { name: 'Nika Daryaei', role: 'Motion Designer', status: 'Uploading video', accent: 'text-violet' },
-  { name: 'Pouya Karimi', role: 'Client Manager', status: 'Shared a link', accent: 'text-danger' },
-];
+export const teamFallback = [];
 
 export const activityFallback = [
   { action: 'آپلود', title: 'Launch-Film-v7.mp4', time: '2 دقیقه پیش', accent: 'text-brand' },
   { action: 'اشتراک', title: 'Brand-System.pdf', time: '9 دقیقه پیش', accent: 'text-warning' },
   { action: 'جابجایی', title: 'Client Assets / Final', time: '26 دقیقه پیش', accent: 'text-violet' },
   { action: 'دعوت عضو', title: 'Sara Rahimi', time: '1 ساعت پیش', accent: 'text-danger' },
-];
-
-export const settingsCards = [
-  { title: 'تنظیمات آپلود', body: 'سقف آپلود 1024MB، محدودیت فایل های همزمان و سیاست های فایل های مسدود شده.' },
-  { title: 'هویت برند', body: 'مدیریت عنوان محصول، رنگ ها و کیفیت صفحه های share و profile برای ارائه بهتر به مشتری.' },
-  { title: 'اعلان ها و فعالیت', body: 'کنترل نوتیفیکیشن ها، رویدادهای تیمی و مسیرهای اعلان در داشبورد.' },
-  { title: 'سیاست های امنیتی', body: 'تنظیم originها، نشست ها و سیاست های دسترسی برای استقرار self-hosted حرفه ای.' },
 ];
 
 export const tourSteps = [
@@ -154,7 +142,7 @@ export const pricingPlans = [
 ];
 
 export const notificationsSeed = [
-  'آماده برای اتصال نوتیفیکیشن های لحظه ای به Socket.io',
+  'آخرین فعالیت ها از لاگ واقعی سیستم خوانده می شوند.',
   'سقف آپلود پروژه روی 1024MB هماهنگ شده است',
   'صفحات معرفی، امنیت و تعرفه در نسخه وانیلا در دسترس هستند',
 ];
