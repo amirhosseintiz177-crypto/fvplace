@@ -560,7 +560,7 @@ function settingsPage() {
             <div class="settings-card">
               <h2>${escapeHtml(card.title)}</h2>
               <p class="muted mt-3">${escapeHtml(card.body)}</p>
-              <div class="surface-card mt-4">این بخش آماده اتصال به تنظیمات واقعی بک اند است.</div>
+              <div class="surface-card mt-4">این گزینه ها مستقیم روی همین نسخه اعمال می شوند و نتیجه را فوری می بینید.</div>
             </div>
           `,
         )
