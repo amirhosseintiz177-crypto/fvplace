@@ -1,0 +1,12 @@
+{
+  "name": "fvplace-workspace",
+  "private": true,
+  "version": "1.0.0",
+  "description": "FVPlace vanilla static app",
+  "scripts": {
+    "start": "node server.js",
+    "serve": "node server.js",
+    "dev": "node server.js",
+    "check": "node --experimental-vm-modules -e \"const fs=require('fs');const path=require('path');const vm=require('vm');const dir=path.join(process.cwd(),'assets/js');for(const file of fs.readdirSync(dir)){if(!file.endsWith('.js'))continue;new vm.SourceTextModule(fs.readFileSync(path.join(dir,file),'utf8'),{identifier:file});console.log('Parsed',file);}\""
+  }
+}

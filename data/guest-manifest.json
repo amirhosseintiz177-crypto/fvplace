@@ -1,0 +1,35 @@
+{
+  "files": [
+    {
+      "_id": "08ed9dc3-5743-4ebf-9d67-5fc219bffe8b",
+      "name": "hello.txt",
+      "type": "file",
+      "mimeType": "text/plain",
+      "size": 11,
+      "parent": null,
+      "visibility": "public",
+      "note": "smoke test",
+      "ownerId": "0bb71190-5f17-439e-9ccc-d5affe21cab2",
+      "updatedAt": "2026-05-18T18:03:19.089Z",
+      "updatedAtLabel": "همین حالا",
+      "storagePath": "/home/amir/Downloads/fvplace/fvplace-vanilla/storage/guest-uploads/08ed9dc3-5743-4ebf-9d67-5fc219bffe8b-hello.txt",
+      "diskName": "08ed9dc3-5743-4ebf-9d67-5fc219bffe8b-hello.txt"
+    }
+  ],
+  "shares": [],
+  "activity": [
+    {
+      "_id": "8d2c8c64-e0d2-4bad-b1da-c4b8f2455348",
+      "action": "upload",
+      "message": "فایل «hello.txt» آپلود شد.",
+      "actorName": "Test User",
+      "createdAt": "2026-05-18T18:03:19.089Z"
+    }
+  ],
+  "workspace": {
+    "_id": "local-workspace",
+    "name": "فضای کاری محلی",
+    "storageQuotaBytes": 16106127360,
+    "members": []
+  }
+}
