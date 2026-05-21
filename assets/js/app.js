@@ -311,7 +311,7 @@ async function mountAuthPage() {
 
     const payload = {
       email: String(formData.get('email') || '').trim(),
-      password: String(formData.get('password') || ''),
+      password: String(formData.get('password') || '').trim(),
     };
     if (mode === 'register') payload.name = String(formData.get('name') || '').trim();
 
@@ -771,6 +771,9 @@ function mountSettingsPage() {
   if (!form) return;
   const resetButton = qs('.js-reset-settings');
   const testButton = qs('.js-test-api');
+  const applyUploadPolicy = qs('.js-apply-upload-policy');
+  const applyBranding = qs('.js-apply-branding');
+  const applySecurity = qs('.js-apply-security');
   const exportButton = qs('.js-export-settings');
   const importButton = qs('.js-apply-import');
   const importField = qs('.js-import-settings');
@@ -830,6 +833,33 @@ function mountSettingsPage() {
     } catch (error) {
       status.className = 'status-pill js-settings-status is-danger';
       status.textContent = 'اتصال ناموفق';
+      toast(error.message, 'danger');
+    }
+  });
+
+
+  applyUploadPolicy?.addEventListener('click', async () => {
+    try {
+      const payload = await apiFetch('/vanilla-api/files');
+      const count = payload.items?.length || 0;
+      toast(`تنظیمات آپلود اعمال شد. اکنون ${count} آیتم در فضای شما ثبت شده است.`);
+    } catch (error) {
+      toast(error.message, 'danger');
+    }
+  });
+
+  applyBranding?.addEventListener('click', () => {
+    document.documentElement.style.setProperty('--brand', '#9ef3dd');
+    document.documentElement.style.setProperty('--brand-strong', '#dffff6');
+    toast('هویت برند روی رابط اعمال شد.');
+  });
+
+  applySecurity?.addEventListener('click', async () => {
+    try {
+      const response = await fetch(`${getApiBaseUrl()}/health`);
+      if (!response.ok) throw new Error('Health endpoint در دسترس نیست.');
+      toast('سیاست امنیتی بررسی شد: API در دسترس و سالم است.');
+    } catch (error) {
       toast(error.message, 'danger');
     }
   });

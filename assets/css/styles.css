@@ -1,5 +1,7 @@
+@import url("https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700;800;900&family=Space+Grotesk:wght@500;700&display=swap");
 :root {
-  --font-sans: "Segoe UI Variable Display", "Aptos", "Vazirmatn", sans-serif;
+  --font-sans: "Vazirmatn", "Segoe UI Variable Display", "Aptos", sans-serif;
+  --font-display: "Space Grotesk", "Vazirmatn", sans-serif;
   --bg: #07111e;
   --bg-soft: #0b1626;
   --panel: rgba(8, 17, 31, 0.76);
