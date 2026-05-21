@@ -209,6 +209,12 @@ function homePage() {
               <a href="${linkHref('/tour/')}" class="btn-secondary">دیدن تور محصول</a>
               <a href="${linkHref('/pricing/')}" class="btn-ghost">مرور تعرفه ها</a>
             </div>
+            <div class="ux-row mt-4" style="flex-wrap:wrap;">
+              <span class="ux-pill">رابط کاملا فارسی</span>
+              <span class="ux-pill">پشتیبانی از فایل حجیم</span>
+              <span class="ux-pill">اشتراک امن + QR</span>
+              <span class="ux-pill">پروفایل عمومی</span>
+            </div>
           </div>
           <div class="stack">
             <div class="hero-side-card">
@@ -374,6 +380,7 @@ function dashboardPage() {
       <div class="stack">
         <div class="glass-card">
           <h2 class="mt-0">میانبرهای امروز</h2>
+          <p class="muted mt-2">کارهای پرتکرار را یک‌جا و با حداقل کلیک انجام بده.</p>
           <div class="stack mt-3">
             ${['آپلود فایل جدید', 'ساخت پوشه برای مشتری', 'مرور فعالیت تیم', 'باز کردن لینک های اشتراک'].map((item) => `<div class="info-tile">${escapeHtml(item)}</div>`).join('')}
           </div>
@@ -553,6 +560,7 @@ function settingsPage() {
       <p class="section-copy mt-4">از آدرس اپ و API گرفته تا ظاهر، تراکم نمایش و رفتار اعلان ها؛ اینجا جایی است که تجربه FVPlace را برای استفاده واقعی آماده می کنید.</p>
     </section>
     <section class="settings-grid fade-in">
+      <div class="notice is-success">این صفحه الآن عملیاتی است: هر دکمه یک اثر واقعی روی محیط یا اتصال API دارد.</div>
       <section class="settings-card">
         <h2>تنظیمات تجربه وانیلا</h2>
         <p class="muted mt-3">این تنظیمات داخل همین نسخه ذخیره می شوند تا ظاهر، اتصال و رفتار محیط کاری شما همیشه یکدست باقی بماند.</p>
