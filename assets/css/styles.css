@@ -1,5 +1,7 @@
+@import url("https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700;800;900&family=Space+Grotesk:wght@500;700&display=swap");
 :root {
-  --font-sans: "Segoe UI Variable Display", "Aptos", "Vazirmatn", sans-serif;
+  --font-sans: "Vazirmatn", "Segoe UI Variable Display", "Aptos", sans-serif;
+  --font-display: "Space Grotesk", "Vazirmatn", sans-serif;
   --bg: #07111e;
   --bg-soft: #0b1626;
   --panel: rgba(8, 17, 31, 0.76);
@@ -2389,3 +2391,721 @@ body.is-ready .app-loader {
     width: auto;
   }
 }
+
+
+/* UX polish */
+.panel,.surface-card,.settings-card,.member-card,.workspace-card,.activity-card{transition:transform .2s ease,border-color .2s ease,background .2s ease;}
+.panel:hover,.surface-card:hover,.settings-card:hover,.member-card:hover,.workspace-card:hover,.activity-card:hover{transform:translateY(-2px);border-color:rgba(158,243,221,.35);}
+.field,.select,.textarea{background:rgba(7,16,30,.75);border:1px solid rgba(255,255,255,.14);}
+.field:focus,.select:focus,.textarea:focus{outline:none;border-color:rgba(158,243,221,.7);box-shadow:0 0 0 3px rgba(158,243,221,.18);}
+
+
+/* ===== Massive UX Refresh Pack ===== */
+.shell-root {
+  isolation: isolate;
+}
+
+.hero-kicker,
+.caps-label,
+.eyebrow {
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.hero-display,
+.display-title,
+.section-title,
+.editorial-title {
+  font-family: var(--font-display);
+  line-height: 1.18;
+  letter-spacing: -0.01em;
+}
+
+.section-copy,
+.subtle-copy,
+.muted {
+  line-height: 1.9;
+}
+
+.brand-mark strong {
+  font-family: var(--font-display);
+  letter-spacing: 0.03em;
+}
+
+.brand-mark__icon {
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.25), 0 12px 26px rgba(0,0,0,0.35);
+}
+
+.marketing-header,
+.app-header {
+  position: sticky;
+  top: 0.7rem;
+  z-index: 18;
+  backdrop-filter: blur(18px);
+  border-radius: 1.1rem;
+}
+
+.marketing-header::before,
+.app-header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+.hero-stage,
+.section-hero {
+  padding: clamp(1.2rem, 2vw, 2.1rem);
+}
+
+.hero-grid {
+  align-items: start;
+  gap: clamp(1rem, 2vw, 1.4rem);
+}
+
+.hero-subcopy {
+  max-width: 72ch;
+}
+
+.hero-actions {
+  gap: 0.7rem;
+  flex-wrap: wrap;
+}
+
+.btn-primary,
+.btn-secondary,
+.btn-ghost,
+.btn-soft {
+  position: relative;
+  transition: transform .22s ease, box-shadow .22s ease, background .22s ease, border-color .22s ease;
+}
+
+.btn-primary:hover,
+.btn-secondary:hover,
+.btn-ghost:hover,
+.btn-soft:hover {
+  transform: translateY(-2px);
+}
+
+.btn-primary:active,
+.btn-secondary:active,
+.btn-ghost:active,
+.btn-soft:active {
+  transform: translateY(0);
+}
+
+.btn-primary {
+  box-shadow: 0 14px 26px rgba(121,245,207,.2);
+}
+
+.btn-secondary,
+.btn-ghost,
+.btn-soft {
+  box-shadow: 0 10px 24px rgba(0,0,0,.18);
+}
+
+.home-shell,
+.page-shell {
+  gap: 1rem;
+}
+
+.panel,
+.glass-card,
+.surface-card,
+.editorial-card,
+.settings-card,
+.workspace-card,
+.member-card,
+.activity-card,
+.file-card {
+  position: relative;
+}
+
+.panel::after,
+.glass-card::after,
+.surface-card::after,
+.editorial-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(145deg, rgba(255,255,255,0.08), rgba(255,255,255,0) 45%);
+  opacity: .38;
+}
+
+.stats-grid {
+  gap: .8rem;
+}
+
+.info-tile {
+  padding: .95rem 1rem;
+}
+
+.info-tile strong {
+  font-family: var(--font-display);
+}
+
+.dashboard-grid {
+  align-items: start;
+}
+
+.dashboard-hero__aside .surface-card,
+.editorial-card .surface-card {
+  background: rgba(255,255,255,0.03);
+}
+
+.chart-track {
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.14);
+}
+
+.segment-card {
+  transition: transform .2s ease, border-color .2s ease;
+}
+
+.segment-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(158,243,221,.38);
+}
+
+.nav-chip {
+  transition: all .2s ease;
+}
+
+.nav-chip:hover {
+  transform: translateY(-1px);
+}
+
+.nav-chip.is-active {
+  box-shadow: inset 0 0 0 1px rgba(158,243,221,.4), 0 10px 24px rgba(0,0,0,.24);
+}
+
+.command-dialog,
+.upload-modal-card,
+.share-modal-card {
+  border: 1px solid rgba(255,255,255,.14);
+}
+
+.command-input {
+  border-radius: .9rem;
+}
+
+.form-row > span {
+  font-weight: 600;
+}
+
+.field,
+.select,
+.textarea {
+  border-radius: .95rem;
+  min-height: 2.8rem;
+}
+
+.textarea {
+  min-height: 9rem;
+  resize: vertical;
+}
+
+.toggle-row {
+  border-radius: .95rem;
+  border: 1px dashed rgba(255,255,255,.14);
+  padding: .75rem .85rem;
+}
+
+.status-pill {
+  font-weight: 700;
+}
+
+.notice {
+  border-radius: .9rem;
+}
+
+.file-row,
+.member-card .content-grid,
+.workspace-card .content-grid {
+  align-items: center;
+}
+
+.file-row {
+  border-radius: .9rem;
+  padding: .8rem .85rem;
+}
+
+.file-row:hover {
+  background: rgba(255,255,255,.03);
+}
+
+.activity-index,
+.member-index,
+.story-index {
+  font-family: var(--font-display);
+}
+
+.activity-copy h2,
+.member-copy h2,
+.workspace-card h2 {
+  font-size: clamp(1rem, 1.4vw, 1.2rem);
+}
+
+.settings-grid {
+  grid-template-columns: 1fr;
+}
+
+.settings-card {
+  padding: clamp(1rem, 1.8vw, 1.35rem);
+}
+
+.settings-card .three-col,
+.settings-card .two-col {
+  gap: .7rem;
+}
+
+.settings-card .btn-soft,
+.settings-card .btn-primary,
+.settings-card .btn-ghost {
+  width: 100%;
+  justify-content: center;
+}
+
+.footer-panel {
+  border-radius: 2rem;
+}
+
+.footer-links a {
+  padding: .2rem 0;
+  display: inline-flex;
+}
+
+.footer-links a:hover {
+  color: var(--brand);
+}
+
+.toast {
+  border-radius: .9rem;
+  box-shadow: 0 12px 28px rgba(0,0,0,.25);
+}
+
+.preview-media {
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.preview-media iframe,
+.preview-media img,
+.preview-media video {
+  background: #050b15;
+}
+
+/* Decorative orbs and gradients tuning */
+.hero-orb {
+  filter: blur(62px);
+  opacity: .35;
+}
+
+.hero-orb-a { transform: translate3d(0,0,0) scale(1.05); }
+.hero-orb-b { transform: translate3d(0,0,0) scale(1.08); }
+.hero-orb-c { transform: translate3d(0,0,0) scale(1.1); }
+
+/* spacing system upgrades */
+.mt-0 { margin-top: 0 !important; }
+.mt-1 { margin-top: .35rem !important; }
+.mt-2 { margin-top: .55rem !important; }
+.mt-3 { margin-top: .85rem !important; }
+.mt-4 { margin-top: 1.1rem !important; }
+.mb-0 { margin-bottom: 0 !important; }
+
+/* high fidelity card system */
+.surface-card,
+.info-tile,
+.metric-card,
+.summary-card,
+.stat-tile,
+.plan-card,
+.solution-card,
+.step-card,
+.profile-card,
+.share-card {
+  box-shadow: 0 10px 24px rgba(0,0,0,.18);
+}
+
+.surface-card:hover,
+.info-tile:hover,
+.metric-card:hover,
+.summary-card:hover,
+.stat-tile:hover,
+.plan-card:hover,
+.solution-card:hover,
+.step-card:hover,
+.profile-card:hover,
+.share-card:hover {
+  box-shadow: 0 18px 34px rgba(0,0,0,.24);
+}
+
+/* Dense-yet-readable table/list affordances */
+.table-card table tr {
+  transition: background .16s ease;
+}
+
+.table-card table tr:hover {
+  background: rgba(255,255,255,.03);
+}
+
+/* File manager enhancements */
+.file-manager-toolbar {
+  gap: .6rem;
+}
+
+.file-manager-toolbar .field {
+  min-height: 2.6rem;
+}
+
+.file-manager-panel,
+.file-manager-sidebar-card {
+  border-color: rgba(255,255,255,.12);
+}
+
+.dropzone {
+  border-style: dashed;
+  border-color: rgba(158,243,221,.4);
+}
+
+.dropzone:hover {
+  background: rgba(158,243,221,.08);
+}
+
+.queue-item {
+  border-radius: .9rem;
+}
+
+.progress-track {
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  border-radius: inherit;
+}
+
+/* Accessibility polish */
+:focus-visible {
+  outline: 2px solid rgba(158,243,221,.72);
+  outline-offset: 2px;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  box-shadow: 0 0 0 3px rgba(158,243,221,.18);
+}
+
+/* Marketing cards */
+.solution-card h2,
+.step-card h2,
+.plan-card h2 {
+  font-family: var(--font-display);
+}
+
+.plan-card.is-featured {
+  transform: translateY(-2px);
+}
+
+.plan-card ul,
+.solution-card ul,
+.activity-points,
+.plan-points,
+.feature-list {
+  line-height: 1.85;
+}
+
+/* Profile and share sections */
+.profile-hero-meta,
+.share-resolve-form {
+  gap: .7rem;
+}
+
+.share-qr {
+  border-radius: .8rem;
+  border: 1px solid rgba(255,255,255,.14);
+  padding: .35rem;
+  background: #fff;
+}
+
+/* Mobile optimizations */
+@media (max-width: 980px) {
+  .marketing-header,
+  .app-header {
+    top: .35rem;
+    border-radius: .9rem;
+  }
+
+  .hero-stage,
+  .section-hero,
+  .panel,
+  .glass-card,
+  .settings-card,
+  .editorial-card {
+    border-radius: 1.2rem;
+  }
+
+  .hero-display,
+  .display-title,
+  .section-title {
+    font-size: clamp(1.28rem, 5vw, 1.82rem);
+  }
+
+  .hero-actions .btn-primary,
+  .hero-actions .btn-secondary,
+  .hero-actions .btn-ghost,
+  .hero-actions .btn-soft {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .stats-grid,
+  .two-col,
+  .three-col,
+  .four-col {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-grid,
+  .story-grid,
+  .feature-grid,
+  .team-grid,
+  .workspace-grid,
+  .settings-grid,
+  .activity-grid,
+  .pricing-grid,
+  .share-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .file-row {
+    padding: .7rem;
+  }
+}
+
+@media (min-width: 981px) and (max-width: 1280px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .feature-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pricing-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* extra utility classes for future pages */
+.ux-row { display: flex; gap: .65rem; align-items: center; }
+.ux-col { display: flex; flex-direction: column; gap: .65rem; }
+.ux-center { display: grid; place-items: center; }
+.ux-space-between { display: flex; justify-content: space-between; align-items: center; }
+.ux-soft { color: var(--muted); }
+.ux-brand { color: var(--brand); }
+.ux-card {
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 1rem;
+  padding: .9rem;
+  background: rgba(255,255,255,.03);
+}
+.ux-card:hover { border-color: rgba(158,243,221,.35); }
+.ux-divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.16), transparent);
+}
+.ux-scroll-y { overflow-y: auto; scrollbar-width: thin; }
+.ux-scroll-y::-webkit-scrollbar { width: 8px; }
+.ux-scroll-y::-webkit-scrollbar-thumb { background: rgba(255,255,255,.2); border-radius: 999px; }
+.ux-pill {
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 999px;
+  padding: .3rem .7rem;
+  font-size: .82rem;
+}
+.ux-mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+.ux-glow { box-shadow: 0 0 0 1px rgba(158,243,221,.24), 0 0 32px rgba(158,243,221,.1); }
+
+.u-gap-1 { gap: 0.1rem; } .u-pad-1 { padding: 0.1rem; }
+.u-gap-2 { gap: 0.2rem; } .u-pad-2 { padding: 0.2rem; }
+.u-gap-3 { gap: 0.3rem; } .u-pad-3 { padding: 0.3rem; }
+.u-gap-4 { gap: 0.4rem; } .u-pad-4 { padding: 0.4rem; }
+.u-gap-5 { gap: 0.5rem; } .u-pad-5 { padding: 0.5rem; }
+.u-gap-6 { gap: 0.6rem; } .u-pad-6 { padding: 0.6rem; }
+.u-gap-7 { gap: 0.7rem; } .u-pad-7 { padding: 0.7rem; }
+.u-gap-8 { gap: 0.8rem; } .u-pad-8 { padding: 0.8rem; }
+.u-gap-9 { gap: 0.9rem; } .u-pad-9 { padding: 0.9rem; }
+.u-gap-10 { gap: 1.0rem; } .u-pad-10 { padding: 1.0rem; }
+.u-gap-11 { gap: 1.1rem; } .u-pad-11 { padding: 1.1rem; }
+.u-gap-12 { gap: 1.2rem; } .u-pad-12 { padding: 1.2rem; }
+.u-gap-13 { gap: 1.3rem; } .u-pad-13 { padding: 1.3rem; }
+.u-gap-14 { gap: 1.4rem; } .u-pad-14 { padding: 1.4rem; }
+.u-gap-15 { gap: 1.5rem; } .u-pad-15 { padding: 1.5rem; }
+.u-gap-16 { gap: 1.6rem; } .u-pad-16 { padding: 1.6rem; }
+.u-gap-17 { gap: 1.7rem; } .u-pad-17 { padding: 1.7rem; }
+.u-gap-18 { gap: 1.8rem; } .u-pad-18 { padding: 1.8rem; }
+.u-gap-19 { gap: 1.9rem; } .u-pad-19 { padding: 1.9rem; }
+.u-gap-20 { gap: 2.0rem; } .u-pad-20 { padding: 2.0rem; }
+.u-gap-21 { gap: 2.1rem; } .u-pad-21 { padding: 2.1rem; }
+.u-gap-22 { gap: 2.2rem; } .u-pad-22 { padding: 2.2rem; }
+.u-gap-23 { gap: 2.3rem; } .u-pad-23 { padding: 2.3rem; }
+.u-gap-24 { gap: 2.4rem; } .u-pad-24 { padding: 2.4rem; }
+.u-gap-25 { gap: 2.5rem; } .u-pad-25 { padding: 2.5rem; }
+.u-gap-26 { gap: 2.6rem; } .u-pad-26 { padding: 2.6rem; }
+.u-gap-27 { gap: 2.7rem; } .u-pad-27 { padding: 2.7rem; }
+.u-gap-28 { gap: 2.8rem; } .u-pad-28 { padding: 2.8rem; }
+.u-gap-29 { gap: 2.9rem; } .u-pad-29 { padding: 2.9rem; }
+.u-gap-30 { gap: 3.0rem; } .u-pad-30 { padding: 3.0rem; }
+.u-gap-31 { gap: 3.1rem; } .u-pad-31 { padding: 3.1rem; }
+.u-gap-32 { gap: 3.2rem; } .u-pad-32 { padding: 3.2rem; }
+.u-gap-33 { gap: 3.3rem; } .u-pad-33 { padding: 3.3rem; }
+.u-gap-34 { gap: 3.4rem; } .u-pad-34 { padding: 3.4rem; }
+.u-gap-35 { gap: 3.5rem; } .u-pad-35 { padding: 3.5rem; }
+.u-gap-36 { gap: 3.6rem; } .u-pad-36 { padding: 3.6rem; }
+.u-gap-37 { gap: 3.7rem; } .u-pad-37 { padding: 3.7rem; }
+.u-gap-38 { gap: 3.8rem; } .u-pad-38 { padding: 3.8rem; }
+.u-gap-39 { gap: 3.9rem; } .u-pad-39 { padding: 3.9rem; }
+.u-gap-40 { gap: 4.0rem; } .u-pad-40 { padding: 4.0rem; }
+.u-gap-41 { gap: 4.1rem; } .u-pad-41 { padding: 4.1rem; }
+.u-gap-42 { gap: 4.2rem; } .u-pad-42 { padding: 4.2rem; }
+.u-gap-43 { gap: 4.3rem; } .u-pad-43 { padding: 4.3rem; }
+.u-gap-44 { gap: 4.4rem; } .u-pad-44 { padding: 4.4rem; }
+.u-gap-45 { gap: 4.5rem; } .u-pad-45 { padding: 4.5rem; }
+.u-gap-46 { gap: 4.6rem; } .u-pad-46 { padding: 4.6rem; }
+.u-gap-47 { gap: 4.7rem; } .u-pad-47 { padding: 4.7rem; }
+.u-gap-48 { gap: 4.8rem; } .u-pad-48 { padding: 4.8rem; }
+.u-gap-49 { gap: 4.9rem; } .u-pad-49 { padding: 4.9rem; }
+.u-gap-50 { gap: 5.0rem; } .u-pad-50 { padding: 5.0rem; }
+.u-gap-51 { gap: 5.1rem; } .u-pad-51 { padding: 5.1rem; }
+.u-gap-52 { gap: 5.2rem; } .u-pad-52 { padding: 5.2rem; }
+.u-gap-53 { gap: 5.3rem; } .u-pad-53 { padding: 5.3rem; }
+.u-gap-54 { gap: 5.4rem; } .u-pad-54 { padding: 5.4rem; }
+.u-gap-55 { gap: 5.5rem; } .u-pad-55 { padding: 5.5rem; }
+.u-gap-56 { gap: 5.6rem; } .u-pad-56 { padding: 5.6rem; }
+.u-gap-57 { gap: 5.7rem; } .u-pad-57 { padding: 5.7rem; }
+.u-gap-58 { gap: 5.8rem; } .u-pad-58 { padding: 5.8rem; }
+.u-gap-59 { gap: 5.9rem; } .u-pad-59 { padding: 5.9rem; }
+.u-gap-60 { gap: 6.0rem; } .u-pad-60 { padding: 6.0rem; }
+.u-gap-61 { gap: 6.1rem; } .u-pad-61 { padding: 6.1rem; }
+.u-gap-62 { gap: 6.2rem; } .u-pad-62 { padding: 6.2rem; }
+.u-gap-63 { gap: 6.3rem; } .u-pad-63 { padding: 6.3rem; }
+.u-gap-64 { gap: 6.4rem; } .u-pad-64 { padding: 6.4rem; }
+.u-gap-65 { gap: 6.5rem; } .u-pad-65 { padding: 6.5rem; }
+.u-gap-66 { gap: 6.6rem; } .u-pad-66 { padding: 6.6rem; }
+.u-gap-67 { gap: 6.7rem; } .u-pad-67 { padding: 6.7rem; }
+.u-gap-68 { gap: 6.8rem; } .u-pad-68 { padding: 6.8rem; }
+.u-gap-69 { gap: 6.9rem; } .u-pad-69 { padding: 6.9rem; }
+.u-gap-70 { gap: 7.0rem; } .u-pad-70 { padding: 7.0rem; }
+.u-gap-71 { gap: 7.1rem; } .u-pad-71 { padding: 7.1rem; }
+.u-gap-72 { gap: 7.2rem; } .u-pad-72 { padding: 7.2rem; }
+.u-gap-73 { gap: 7.3rem; } .u-pad-73 { padding: 7.3rem; }
+.u-gap-74 { gap: 7.4rem; } .u-pad-74 { padding: 7.4rem; }
+.u-gap-75 { gap: 7.5rem; } .u-pad-75 { padding: 7.5rem; }
+.u-gap-76 { gap: 7.6rem; } .u-pad-76 { padding: 7.6rem; }
+.u-gap-77 { gap: 7.7rem; } .u-pad-77 { padding: 7.7rem; }
+.u-gap-78 { gap: 7.8rem; } .u-pad-78 { padding: 7.8rem; }
+.u-gap-79 { gap: 7.9rem; } .u-pad-79 { padding: 7.9rem; }
+.u-gap-80 { gap: 8.0rem; } .u-pad-80 { padding: 8.0rem; }
+.u-gap-81 { gap: 8.1rem; } .u-pad-81 { padding: 8.1rem; }
+.u-gap-82 { gap: 8.2rem; } .u-pad-82 { padding: 8.2rem; }
+.u-gap-83 { gap: 8.3rem; } .u-pad-83 { padding: 8.3rem; }
+.u-gap-84 { gap: 8.4rem; } .u-pad-84 { padding: 8.4rem; }
+.u-gap-85 { gap: 8.5rem; } .u-pad-85 { padding: 8.5rem; }
+.u-gap-86 { gap: 8.6rem; } .u-pad-86 { padding: 8.6rem; }
+.u-gap-87 { gap: 8.7rem; } .u-pad-87 { padding: 8.7rem; }
+.u-gap-88 { gap: 8.8rem; } .u-pad-88 { padding: 8.8rem; }
+.u-gap-89 { gap: 8.9rem; } .u-pad-89 { padding: 8.9rem; }
+.u-gap-90 { gap: 9.0rem; } .u-pad-90 { padding: 9.0rem; }
+.u-gap-91 { gap: 9.1rem; } .u-pad-91 { padding: 9.1rem; }
+.u-gap-92 { gap: 9.2rem; } .u-pad-92 { padding: 9.2rem; }
+.u-gap-93 { gap: 9.3rem; } .u-pad-93 { padding: 9.3rem; }
+.u-gap-94 { gap: 9.4rem; } .u-pad-94 { padding: 9.4rem; }
+.u-gap-95 { gap: 9.5rem; } .u-pad-95 { padding: 9.5rem; }
+.u-gap-96 { gap: 9.6rem; } .u-pad-96 { padding: 9.6rem; }
+.u-gap-97 { gap: 9.7rem; } .u-pad-97 { padding: 9.7rem; }
+.u-gap-98 { gap: 9.8rem; } .u-pad-98 { padding: 9.8rem; }
+.u-gap-99 { gap: 9.9rem; } .u-pad-99 { padding: 9.9rem; }
+.u-gap-100 { gap: 10.0rem; } .u-pad-100 { padding: 10.0rem; }
+.u-gap-101 { gap: 10.1rem; } .u-pad-101 { padding: 10.1rem; }
+.u-gap-102 { gap: 10.2rem; } .u-pad-102 { padding: 10.2rem; }
+.u-gap-103 { gap: 10.3rem; } .u-pad-103 { padding: 10.3rem; }
+.u-gap-104 { gap: 10.4rem; } .u-pad-104 { padding: 10.4rem; }
+.u-gap-105 { gap: 10.5rem; } .u-pad-105 { padding: 10.5rem; }
+.u-gap-106 { gap: 10.6rem; } .u-pad-106 { padding: 10.6rem; }
+.u-gap-107 { gap: 10.7rem; } .u-pad-107 { padding: 10.7rem; }
+.u-gap-108 { gap: 10.8rem; } .u-pad-108 { padding: 10.8rem; }
+.u-gap-109 { gap: 10.9rem; } .u-pad-109 { padding: 10.9rem; }
+.u-gap-110 { gap: 11.0rem; } .u-pad-110 { padding: 11.0rem; }
+.u-gap-111 { gap: 11.1rem; } .u-pad-111 { padding: 11.1rem; }
+.u-gap-112 { gap: 11.2rem; } .u-pad-112 { padding: 11.2rem; }
+.u-gap-113 { gap: 11.3rem; } .u-pad-113 { padding: 11.3rem; }
+.u-gap-114 { gap: 11.4rem; } .u-pad-114 { padding: 11.4rem; }
+.u-gap-115 { gap: 11.5rem; } .u-pad-115 { padding: 11.5rem; }
+.u-gap-116 { gap: 11.6rem; } .u-pad-116 { padding: 11.6rem; }
+.u-gap-117 { gap: 11.7rem; } .u-pad-117 { padding: 11.7rem; }
+.u-gap-118 { gap: 11.8rem; } .u-pad-118 { padding: 11.8rem; }
+.u-gap-119 { gap: 11.9rem; } .u-pad-119 { padding: 11.9rem; }
+.u-gap-120 { gap: 12.0rem; } .u-pad-120 { padding: 12.0rem; }
+.u-gap-121 { gap: 12.1rem; } .u-pad-121 { padding: 12.1rem; }
+.u-gap-122 { gap: 12.2rem; } .u-pad-122 { padding: 12.2rem; }
+.u-gap-123 { gap: 12.3rem; } .u-pad-123 { padding: 12.3rem; }
+.u-gap-124 { gap: 12.4rem; } .u-pad-124 { padding: 12.4rem; }
+.u-gap-125 { gap: 12.5rem; } .u-pad-125 { padding: 12.5rem; }
+.u-gap-126 { gap: 12.6rem; } .u-pad-126 { padding: 12.6rem; }
+.u-gap-127 { gap: 12.7rem; } .u-pad-127 { padding: 12.7rem; }
+.u-gap-128 { gap: 12.8rem; } .u-pad-128 { padding: 12.8rem; }
+.u-gap-129 { gap: 12.9rem; } .u-pad-129 { padding: 12.9rem; }
+.u-gap-130 { gap: 13.0rem; } .u-pad-130 { padding: 13.0rem; }
+.u-gap-131 { gap: 13.1rem; } .u-pad-131 { padding: 13.1rem; }
+.u-gap-132 { gap: 13.2rem; } .u-pad-132 { padding: 13.2rem; }
+.u-gap-133 { gap: 13.3rem; } .u-pad-133 { padding: 13.3rem; }
+.u-gap-134 { gap: 13.4rem; } .u-pad-134 { padding: 13.4rem; }
+.u-gap-135 { gap: 13.5rem; } .u-pad-135 { padding: 13.5rem; }
+.u-gap-136 { gap: 13.6rem; } .u-pad-136 { padding: 13.6rem; }
+.u-gap-137 { gap: 13.7rem; } .u-pad-137 { padding: 13.7rem; }
+.u-gap-138 { gap: 13.8rem; } .u-pad-138 { padding: 13.8rem; }
+.u-gap-139 { gap: 13.9rem; } .u-pad-139 { padding: 13.9rem; }
+.u-gap-140 { gap: 14.0rem; } .u-pad-140 { padding: 14.0rem; }
+.u-gap-141 { gap: 14.1rem; } .u-pad-141 { padding: 14.1rem; }
+.u-gap-142 { gap: 14.2rem; } .u-pad-142 { padding: 14.2rem; }
+.u-gap-143 { gap: 14.3rem; } .u-pad-143 { padding: 14.3rem; }
+.u-gap-144 { gap: 14.4rem; } .u-pad-144 { padding: 14.4rem; }
+.u-gap-145 { gap: 14.5rem; } .u-pad-145 { padding: 14.5rem; }
+.u-gap-146 { gap: 14.6rem; } .u-pad-146 { padding: 14.6rem; }
+.u-gap-147 { gap: 14.7rem; } .u-pad-147 { padding: 14.7rem; }
+.u-gap-148 { gap: 14.8rem; } .u-pad-148 { padding: 14.8rem; }
+.u-gap-149 { gap: 14.9rem; } .u-pad-149 { padding: 14.9rem; }
+.u-gap-150 { gap: 15.0rem; } .u-pad-150 { padding: 15.0rem; }
+
+
+/* Focused cleanup for index/dashboard/file manager */
+.home-shell .hero-stage, .dashboard-grid .glass-card, .files-layout .panel { border-color: rgba(255,255,255,.12); }
+.home-shell .hero-display { font-size: clamp(1.9rem, 3.8vw, 3.1rem); }
+.hero-subcopy { font-size: 1.05rem; color: #c3d0e1; }
+.files-layout .file-row { grid-template-columns: auto 1fr auto; align-items: center; gap: .75rem; }
+.files-layout .file-row .card-actions { display:flex; flex-wrap:wrap; gap:.5rem; justify-content:flex-end; }
+.files-layout .file-row .btn-soft, .files-layout .file-row .btn-ghost { min-width: 5.6rem; }
+.js-dropzone.is-drag-active { border-color: rgba(158,243,221,.8) !important; background: rgba(158,243,221,.12) !important; }
+.file-manager-panel, .file-manager-sidebar-card { min-height: 0; }
+.preview-panel .preview-media { max-height: 28rem; overflow: auto; }

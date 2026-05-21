@@ -10,6 +10,7 @@ const SEARCHES_KEY = 'fvplace.recentSearches';
 const LAST_WORKSPACE_KEY = 'fvplace.lastWorkspace';
 const FOLDER_TREE_COLLAPSE_KEY = 'fvplace.folderTreeCollapsed';
 const GUEST_WORKSPACE_ID = 'guest-workspace';
+const MAX_UPLOAD_BYTES = 1024 * 1024 * 1024;
 
 function toast(message, type = 'success') {
   window.dispatchEvent(new CustomEvent('fvplace:toast', { detail: { message, type } }));
@@ -125,7 +126,7 @@ function uploadModal(workspaces, workspaceId) {
       <h2 class="mt-0">آپلود پیشرفته</h2>
       <p class="muted mt-3">اینجا workspace مقصد، توضیح و مسیر آپلود را شفاف تر می کنیم تا حس یک محصول کامل تر ایجاد شود.</p>
       <div class="three-col mt-4">
-        <div class="surface-card">تا 1024MB برای هر فایل</div>
+        <div class="surface-card">تا 1 گیگابایت برای هر فایل</div>
         <div class="surface-card">آپلود چندفایلی</div>
         <div class="surface-card">صف و پیشرفت زنده</div>
       </div>
@@ -850,6 +851,11 @@ export function mountFileManager(root) {
   async function beginUpload(fileList) {
     const files = Array.from(fileList || []);
     if (!files.length) return;
+    const oversized = files.find((f) => Number(f.size || 0) > MAX_UPLOAD_BYTES);
+    if (oversized) {
+      toast(`فایل «${oversized.name}» بزرگ تر از 1 گیگابایت است.`, 'danger');
+      return;
+    }
     const targetWorkspaceId = state.pendingUploadWorkspaceId || state.workspaceId;
     const uploadNote = state.pendingUploadNote || '';
 
@@ -1306,11 +1312,11 @@ export function mountFileManager(root) {
     root.querySelector('.js-dropzone')?.addEventListener('dragover', (event) => {
       event.preventDefault();
       state.dragActive = true;
-      render();
+      event.currentTarget.classList.add('is-drag-active');
     });
-    root.querySelector('.js-dropzone')?.addEventListener('dragleave', () => {
+    root.querySelector('.js-dropzone')?.addEventListener('dragleave', (event) => {
       state.dragActive = false;
-      render();
+      event.currentTarget.classList.remove('is-drag-active');
     });
     root.querySelector('.js-dropzone')?.addEventListener('drop', (event) => {
       event.preventDefault();

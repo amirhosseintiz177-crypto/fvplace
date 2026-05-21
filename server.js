@@ -11,6 +11,7 @@ const storageDir = path.join(rootDir, 'storage', 'guest-uploads');
 const manifestPath = path.join(dataDir, 'guest-manifest.json');
 const usersPath = path.join(dataDir, 'users.json');
 const sessionsPath = path.join(dataDir, 'sessions.json');
+const MAX_UPLOAD_BYTES = 1024 * 1024 * 1024; // 1 GiB
 
 fs.mkdirSync(dataDir, { recursive: true });
 fs.mkdirSync(storageDir, { recursive: true });
@@ -167,7 +168,7 @@ function readBody(req) {
     let total = 0;
     req.on('data', (chunk) => {
       total += chunk.length;
-      if (total > 80 * 1024 * 1024) {
+      if (total > MAX_UPLOAD_BYTES + (3 * 1024 * 1024)) {
         reject(new Error('Payload too large'));
         req.destroy();
         return;
@@ -211,6 +212,7 @@ function createStoredFileRecord({ ownerId = null, name, mimeType, base64, parent
   const diskName = `${id}-${sanitizeFileName(path.basename(originalName, path.extname(originalName)))}${ext}`;
   const diskPath = path.join(storageDir, diskName);
   const buffer = Buffer.from(String(base64 || ''), 'base64');
+  if (buffer.length > MAX_UPLOAD_BYTES) throw new Error('حداکثر حجم هر فایل 1 گیگابایت است.');
   fs.writeFileSync(diskPath, buffer);
   return {
     _id: id,
@@ -280,7 +282,7 @@ async function handleAuth(req, res, url) {
         id: randomUUID(),
         name: String(body.name || 'کاربر جدید').trim() || 'کاربر جدید',
         email: String(body.email || '').trim().toLowerCase(),
-        passwordHash: sha(body.password || ''),
+        passwordHash: sha(String(body.password || '').trim()),
         publicProfile: {
           username: String((body.name || 'guest').trim().toLowerCase().replace(/[^a-z0-9]+/g, '-') || 'guest'),
           isPublic: true,
@@ -299,7 +301,9 @@ async function handleAuth(req, res, url) {
     try {
       const body = await readJsonBody(req);
       const user = readUsers().find((entry) => entry.email === String(body.email || '').trim().toLowerCase());
-      if (!user || user.passwordHash !== sha(body.password || '')) {
+      const incomingPassword = String(body.password || '');
+      const validPassword = user && (user.passwordHash === sha(incomingPassword) || user.passwordHash === sha(incomingPassword.trim()));
+      if (!user || !validPassword) {
         return sendJson(res, 401, { message: 'ایمیل یا رمز عبور درست نیست.' });
       }
       return sendJson(res, 200, issueSession(user));
