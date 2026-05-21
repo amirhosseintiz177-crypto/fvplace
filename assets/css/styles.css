@@ -2389,3 +2389,10 @@ body.is-ready .app-loader {
     width: auto;
   }
 }
+
+
+/* UX polish */
+.panel,.surface-card,.settings-card,.member-card,.workspace-card,.activity-card{transition:transform .2s ease,border-color .2s ease,background .2s ease;}
+.panel:hover,.surface-card:hover,.settings-card:hover,.member-card:hover,.workspace-card:hover,.activity-card:hover{transform:translateY(-2px);border-color:rgba(158,243,221,.35);}
+.field,.select,.textarea{background:rgba(7,16,30,.75);border:1px solid rgba(255,255,255,.14);}
+.field:focus,.select:focus,.textarea:focus{outline:none;border-color:rgba(158,243,221,.7);box-shadow:0 0 0 3px rgba(158,243,221,.18);}
