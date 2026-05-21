@@ -528,7 +528,7 @@ function mountTeamPage() {
       const workspacePayload = await apiFetch('/api/workspaces');
       const workspace = workspacePayload.items?.[0];
       const members = workspace?.members || [];
-      const mapped = members.map((m, i) => ({ name: `Member ${i + 1}`, role: m.role || 'viewer', status: 'Active', accent: 'text-brand' }));
+      const mapped = members.map((m, i) => ({ name: m.user ? `کاربر ${String(m.user).slice(0, 8)}` : `عضو ${i + 1}`, role: m.role || 'viewer', status: m.invitedBy ? 'دعوت شده' : 'فعال', accent: 'text-brand' }));
       renderTeamList(mapped);
       if (hint) hint.textContent = `اعضای واقعی workspace: ${mapped.length}`;
     } catch (error) {
@@ -555,6 +555,7 @@ function mountTeamPage() {
         });
         if (hint) hint.textContent = `دعوت واقعی برای ${name} ثبت شد.`;
         toast(`دعوت برای «${name}» از طریق API ثبت شد.`);
+        await loadTeamFromApi();
         return;
       } catch (error) {
         toast(error.message, 'warning');
@@ -840,25 +841,48 @@ function mountSettingsPage() {
 
   applyUploadPolicy?.addEventListener('click', async () => {
     try {
-      const payload = await apiFetch('/vanilla-api/files');
-      const count = payload.items?.length || 0;
-      toast(`تنظیمات آپلود اعمال شد. اکنون ${count} آیتم در فضای شما ثبت شده است.`);
+      let count = 0;
+      if (isAuthenticated()) {
+        const summary = await apiFetch('/api/dashboard/summary');
+        count = Number(summary?.storage?.fileCount || 0);
+      } else {
+        const response = await fetch('/vanilla-api/files');
+        const payload = await response.json();
+        if (!response.ok) throw new Error(payload.message || 'خواندن فایل های مهمان ناموفق بود.');
+        count = payload.items?.length || 0;
+      }
+      status.className = 'status-pill js-settings-status is-success';
+      status.textContent = 'اعمال شد';
+      toast(`تنظیمات آپلود اعمال شد. تعداد فایل های فعلی: ${count}`);
     } catch (error) {
+      status.className = 'status-pill js-settings-status is-danger';
+      status.textContent = 'ناموفق';
       toast(error.message, 'danger');
     }
   });
 
   applyBranding?.addEventListener('click', () => {
-    document.documentElement.style.setProperty('--brand', '#9ef3dd');
-    document.documentElement.style.setProperty('--brand-strong', '#dffff6');
-    toast('هویت برند روی رابط اعمال شد.');
+    const accent = form.elements.accent.value;
+    const palette = accent === 'sunset'
+      ? { brand: '#ffc29d', strong: '#ffe7d6' }
+      : accent === 'ocean'
+        ? { brand: '#93c8ff', strong: '#d9ecff' }
+        : { brand: '#9ef3dd', strong: '#dffff6' };
+    document.documentElement.style.setProperty('--brand', palette.brand);
+    document.documentElement.style.setProperty('--brand-strong', palette.strong);
+    status.className = 'status-pill js-settings-status is-success';
+    status.textContent = 'اعمال شد';
+    toast('هویت برند مطابق تم انتخابی اعمال شد.');
   });
 
   applySecurity?.addEventListener('click', async () => {
     try {
       const response = await fetch(`${getApiBaseUrl()}/health`);
+      const payload = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error('Health endpoint در دسترس نیست.');
-      toast('سیاست امنیتی بررسی شد: API در دسترس و سالم است.');
+      status.className = 'status-pill js-settings-status is-success';
+      status.textContent = 'امن';
+      toast(`سیاست امنیتی بررسی شد: ${payload.app || 'service'} در دسترس است.`);
     } catch (error) {
       toast(error.message, 'danger');
     }
