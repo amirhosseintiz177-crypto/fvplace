@@ -11,6 +11,7 @@ const storageDir = path.join(rootDir, 'storage', 'guest-uploads');
 const manifestPath = path.join(dataDir, 'guest-manifest.json');
 const usersPath = path.join(dataDir, 'users.json');
 const sessionsPath = path.join(dataDir, 'sessions.json');
+const MAX_UPLOAD_BYTES = 1024 * 1024 * 1024; // 1 GiB
 
 fs.mkdirSync(dataDir, { recursive: true });
 fs.mkdirSync(storageDir, { recursive: true });
@@ -167,7 +168,7 @@ function readBody(req) {
     let total = 0;
     req.on('data', (chunk) => {
       total += chunk.length;
-      if (total > 80 * 1024 * 1024) {
+      if (total > MAX_UPLOAD_BYTES + (3 * 1024 * 1024)) {
         reject(new Error('Payload too large'));
         req.destroy();
         return;
@@ -211,6 +212,7 @@ function createStoredFileRecord({ ownerId = null, name, mimeType, base64, parent
   const diskName = `${id}-${sanitizeFileName(path.basename(originalName, path.extname(originalName)))}${ext}`;
   const diskPath = path.join(storageDir, diskName);
   const buffer = Buffer.from(String(base64 || ''), 'base64');
+  if (buffer.length > MAX_UPLOAD_BYTES) throw new Error('حداکثر حجم هر فایل 1 گیگابایت است.');
   fs.writeFileSync(diskPath, buffer);
   return {
     _id: id,

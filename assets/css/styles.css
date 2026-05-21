@@ -3097,3 +3097,15 @@ textarea:focus-visible {
 .u-gap-148 { gap: 14.8rem; } .u-pad-148 { padding: 14.8rem; }
 .u-gap-149 { gap: 14.9rem; } .u-pad-149 { padding: 14.9rem; }
 .u-gap-150 { gap: 15.0rem; } .u-pad-150 { padding: 15.0rem; }
+
+
+/* Focused cleanup for index/dashboard/file manager */
+.home-shell .hero-stage, .dashboard-grid .glass-card, .files-layout .panel { border-color: rgba(255,255,255,.12); }
+.home-shell .hero-display { font-size: clamp(1.9rem, 3.8vw, 3.1rem); }
+.hero-subcopy { font-size: 1.05rem; color: #c3d0e1; }
+.files-layout .file-row { grid-template-columns: auto 1fr auto; align-items: center; gap: .75rem; }
+.files-layout .file-row .card-actions { display:flex; flex-wrap:wrap; gap:.5rem; justify-content:flex-end; }
+.files-layout .file-row .btn-soft, .files-layout .file-row .btn-ghost { min-width: 5.6rem; }
+.js-dropzone.is-drag-active { border-color: rgba(158,243,221,.8) !important; background: rgba(158,243,221,.12) !important; }
+.file-manager-panel, .file-manager-sidebar-card { min-height: 0; }
+.preview-panel .preview-media { max-height: 28rem; overflow: auto; }
